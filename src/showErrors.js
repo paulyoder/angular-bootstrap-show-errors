@@ -6,6 +6,7 @@
     };
     return {
       restrict: 'A',
+      require: '^form',
       compile: function (elem, attrs) {
         if (!elem.hasClass('form-group')) {
           throw 'show-errors element does not have the \'form-group\' class';

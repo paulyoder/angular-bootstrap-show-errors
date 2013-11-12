@@ -6,6 +6,7 @@ angular.module('ui.bootstrap.showErrors', [])
 
     {
       restrict: 'A'
+      require: '^form'
       compile: (elem, attrs) ->
         unless elem.hasClass 'form-group'
           throw "show-errors element does not have the 'form-group' class"

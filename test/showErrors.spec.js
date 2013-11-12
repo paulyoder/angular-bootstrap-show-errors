@@ -15,14 +15,15 @@
         }).toThrow("show-errors element has no input elements with a 'name' attribute");
       });
     });
-    it("adds 'has-error' class", function() {
-      $rootScope.$digest();
-      return expect(element).toHaveClass('has-error');
-    });
-    return it("throws an exception if the element doesn't have the form-group class", function() {
+    it("throws an exception if the element doesn't have the form-group class", function() {
       return expect(function() {
         return $compile('<div show-errors></div>')($rootScope);
       }).toThrow("show-errors element does not have the 'form-group' class");
+    });
+    return it("throws an exception if the element isn't in a form tag", function() {
+      return expect(function() {
+        return $compile('<div class="form-group" show-errors><input type="text" name="firstName"></input></div>')($rootScope);
+      }).toThrow();
     });
   });
 

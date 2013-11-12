@@ -14,11 +14,12 @@ describe 'showErrors', ->
         $compile('<div class="form-group" show-errors><input type="text"></input></div>')($rootScope)
       ).toThrow "show-errors element has no input elements with a 'name' attribute"
 
-  it "adds 'has-error' class", ->
-    $rootScope.$digest()
-    expect(element).toHaveClass('has-error')
-
   it "throws an exception if the element doesn't have the form-group class", ->
     expect( ->
       $compile('<div show-errors></div>')($rootScope)
     ).toThrow "show-errors element does not have the 'form-group' class"
+
+  it "throws an exception if the element isn't in a form tag", ->
+    expect( ->
+      $compile('<div class="form-group" show-errors><input type="text" name="firstName"></input></div>')($rootScope)
+    ).toThrow()
