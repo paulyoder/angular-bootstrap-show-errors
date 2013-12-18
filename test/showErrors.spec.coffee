@@ -8,6 +8,14 @@ describe 'showErrors', ->
     $scope = _$rootScope_
   )
 
+  compileEl = ->
+    el = $compile('<form name="userForm"><div class="form-group" show-errors><input type="text" name="firstName" ng-model="firstName" ng-minlength="3"></input></div></form>')($scope)
+    $scope.$digest()
+    el
+
+  triggerInputEvent = (el, eventName) ->
+    el.find('input')[0].dispatchEvent new Event(eventName)
+
   describe 'directive does not contain an input element with a name attribute', ->
     it 'throws an exception', ->
       expect( ->
@@ -26,23 +34,20 @@ describe 'showErrors', ->
 
   describe "when $pristine && $invalid", ->
     it "input element does not have the 'has-error' class", ->
-      el = $compile('<form><div class="form-group" show-errors><input type="text" name="firstName"></input></div></form>')($scope)
-      $scope.$digest()
+      el = compileEl()
       expect(el.find('div').hasClass('has-error')).toBe false
 
   describe 'when $dirty && $invalid', ->
     describe 'and blurred', ->
       it "input element does not have the 'has-error' class", ->
-        el = $compile('<form name="userForm"><div class="form-group" show-errors><input type="text" name="firstName" ng-model="firstName" ng-minlength="3"></input></div></form>')($scope)
-        $scope.$digest()
+        el = compileEl()
         $scope.userForm.firstName.$setViewValue 'Pa'
-        el.find('input')[0].dispatchEvent new Event('blur')
+        triggerInputEvent el, 'blur'
         expect(el.find('div').hasClass('has-error')).toBe true
 
     describe 'and not blurred', ->
       it "input element does not have the 'has-error' class", ->
-        el = $compile('<form name="userForm"><div class="form-group" show-errors><input type="text" name="firstName" ng-model="firstName" ng-minlength="3"></input></div></form>')($scope)
-        $scope.$digest()
+        el = compileEl()
         $scope.userForm.firstName.$setViewValue 'Pa'
-        el.find('input')[0].dispatchEvent new Event('change')
+        triggerInputEvent el, 'change'
         expect(el.find('div').hasClass('has-error')).toBe false

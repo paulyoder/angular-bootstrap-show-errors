@@ -1,6 +1,6 @@
 (function() {
   describe('showErrors', function() {
-    var $compile, $scope;
+    var $compile, $scope, compileEl, triggerInputEvent;
     $compile = void 0;
     $scope = void 0;
     beforeEach(module('ui.bootstrap.showErrors'));
@@ -8,6 +8,15 @@
       $compile = _$compile_;
       return $scope = _$rootScope_;
     }));
+    compileEl = function() {
+      var el;
+      el = $compile('<form name="userForm"><div class="form-group" show-errors><input type="text" name="firstName" ng-model="firstName" ng-minlength="3"></input></div></form>')($scope);
+      $scope.$digest();
+      return el;
+    };
+    triggerInputEvent = function(el, eventName) {
+      return el.find('input')[0].dispatchEvent(new Event(eventName));
+    };
     describe('directive does not contain an input element with a name attribute', function() {
       return it('throws an exception', function() {
         return expect(function() {
@@ -28,8 +37,7 @@
     describe("when $pristine && $invalid", function() {
       return it("input element does not have the 'has-error' class", function() {
         var el;
-        el = $compile('<form><div class="form-group" show-errors><input type="text" name="firstName"></input></div></form>')($scope);
-        $scope.$digest();
+        el = compileEl();
         return expect(el.find('div').hasClass('has-error')).toBe(false);
       });
     });
@@ -37,20 +45,18 @@
       describe('and blurred', function() {
         return it("input element does not have the 'has-error' class", function() {
           var el;
-          el = $compile('<form name="userForm"><div class="form-group" show-errors><input type="text" name="firstName" ng-model="firstName" ng-minlength="3"></input></div></form>')($scope);
-          $scope.$digest();
+          el = compileEl();
           $scope.userForm.firstName.$setViewValue('Pa');
-          el.find('input')[0].dispatchEvent(new Event('blur'));
+          triggerInputEvent(el, 'blur');
           return expect(el.find('div').hasClass('has-error')).toBe(true);
         });
       });
       return describe('and not blurred', function() {
         return it("input element does not have the 'has-error' class", function() {
           var el;
-          el = $compile('<form name="userForm"><div class="form-group" show-errors><input type="text" name="firstName" ng-model="firstName" ng-minlength="3"></input></div></form>')($scope);
-          $scope.$digest();
+          el = compileEl();
           $scope.userForm.firstName.$setViewValue('Pa');
-          el.find('input')[0].dispatchEvent(new Event('change'));
+          triggerInputEvent(el, 'change');
           return expect(el.find('div').hasClass('has-error')).toBe(false);
         });
       });
