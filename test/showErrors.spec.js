@@ -1,6 +1,6 @@
 (function() {
   describe('showErrors', function() {
-    var $compile, $scope, compileEl, expectFormGroupHasErrorClass, find, firstNameEl, firstNameGroup, invalidName, triggerEvent, validName;
+    var $compile, $scope, compileEl, expectFormGroupHasErrorClass, find, firstNameEl, firstNameGroup, invalidName, validName;
     $compile = void 0;
     $scope = void 0;
     validName = 'Paul';
@@ -22,9 +22,6 @@
         </form>')($scope);
       $scope.$digest();
       return el;
-    };
-    triggerEvent = function(nativeEl, eventName) {
-      return nativeEl.dispatchEvent(new Event(eventName));
     };
     find = function(el, selector) {
       return el[0].querySelector(selector);
@@ -68,7 +65,7 @@
           var el;
           el = compileEl();
           $scope.userForm.firstName.$setViewValue(invalidName);
-          triggerEvent(firstNameEl(el), 'blur');
+          browserTrigger(firstNameEl(el), 'blur');
           return expectFormGroupHasErrorClass(el).toBe(true);
         });
       });
@@ -77,7 +74,7 @@
           var el;
           el = compileEl();
           $scope.userForm.firstName.$setViewValue(invalidName);
-          triggerEvent(firstNameEl(el), 'keydown');
+          browserTrigger(firstNameEl(el), 'keydown');
           return expectFormGroupHasErrorClass(el).toBe(false);
         });
       });
@@ -88,7 +85,7 @@
           var el;
           el = compileEl();
           $scope.userForm.firstName.$setViewValue(validName);
-          triggerEvent(firstNameEl(el), 'blur');
+          browserTrigger(firstNameEl(el), 'blur');
           return expectFormGroupHasErrorClass(el).toBe(false);
         });
       });
@@ -98,7 +95,7 @@
           el = compileEl();
           $scope.userForm.firstName.$setViewValue(validName);
           $scope.userForm.lastName.$setViewValue(invalidName);
-          triggerEvent(firstNameEl(el), 'blur');
+          browserTrigger(firstNameEl(el), 'blur');
           return expectFormGroupHasErrorClass(el).toBe(false);
         });
       });

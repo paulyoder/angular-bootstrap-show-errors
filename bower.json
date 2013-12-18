@@ -21,10 +21,10 @@
     "test",
     "tests"
   ],
-	"dependencies": {
-		"angular": "~1.x"
-	},
-	"devDependencies": {
-		"angular-mocks": "~1.x"
-	}
+  "dependencies": {
+    "angular": "~1.x"
+  },
+  "devDependencies": {
+    "angular-mocks": "~1.x"
+  }
 }

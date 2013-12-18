@@ -24,9 +24,6 @@ describe 'showErrors', ->
     $scope.$digest()
     el
 
-  triggerEvent = (nativeEl, eventName) ->
-    nativeEl.dispatchEvent new Event(eventName)
-
   find = (el, selector) ->
     el[0].querySelector selector
 
@@ -65,14 +62,14 @@ describe 'showErrors', ->
       it "has the 'has-error' class", ->
         el = compileEl()
         $scope.userForm.firstName.$setViewValue invalidName
-        triggerEvent firstNameEl(el), 'blur'
+        browserTrigger firstNameEl(el), 'blur'
         expectFormGroupHasErrorClass(el).toBe true
 
     describe 'and not blurred', ->
       it "does not have the 'has-error' class", ->
         el = compileEl()
         $scope.userForm.firstName.$setViewValue invalidName
-        triggerEvent firstNameEl(el), 'keydown'
+        browserTrigger firstNameEl(el), 'keydown'
         expectFormGroupHasErrorClass(el).toBe false
 
   describe 'when $dirty && $valid', ->
@@ -80,7 +77,7 @@ describe 'showErrors', ->
       it "does not have the 'has-error' class", ->
         el = compileEl()
         $scope.userForm.firstName.$setViewValue validName
-        triggerEvent firstNameEl(el), 'blur'
+        browserTrigger firstNameEl(el), 'blur'
         expectFormGroupHasErrorClass(el).toBe false
 
     describe 'and other input is $invalid', ->
@@ -88,5 +85,5 @@ describe 'showErrors', ->
         el = compileEl()
         $scope.userForm.firstName.$setViewValue validName
         $scope.userForm.lastName.$setViewValue invalidName
-        triggerEvent firstNameEl(el), 'blur'
+        browserTrigger firstNameEl(el), 'blur'
         expectFormGroupHasErrorClass(el).toBe false
