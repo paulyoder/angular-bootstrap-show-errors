@@ -2,11 +2,12 @@
   angular.module('ui.bootstrap.showErrors', []).directive('showErrors', function () {
     var linkFn;
     linkFn = function (scope, el, attrs, formCtrl) {
-      var inputEl, inputNgEl;
+      var inputEl, inputName, inputNgEl;
       inputEl = el[0].querySelector('[name]');
       inputNgEl = angular.element(inputEl);
+      inputName = inputNgEl.attr('name');
       return inputNgEl.bind('blur', function () {
-        if (formCtrl.$invalid) {
+        if (formCtrl[inputName].$invalid) {
           return el.addClass('has-error');
         }
       });

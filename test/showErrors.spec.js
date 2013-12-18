@@ -1,8 +1,10 @@
 (function() {
   describe('showErrors', function() {
-    var $compile, $scope, compileEl, find, firstNameEl, triggerEvent;
+    var $compile, $scope, compileEl, expectFormGroupHasErrorClass, find, firstNameEl, firstNameGroup, invalidName, triggerEvent, validName;
     $compile = void 0;
     $scope = void 0;
+    validName = 'Paul';
+    invalidName = 'Pa';
     beforeEach(module('ui.bootstrap.showErrors'));
     beforeEach(inject(function(_$compile_, _$rootScope_) {
       $compile = _$compile_;
@@ -11,8 +13,11 @@
     compileEl = function() {
       var el;
       el = $compile('<form name="userForm">\
-          <div class="form-group" show-errors>\
+          <div id="first-name-group" class="form-group" show-errors>\
             <input type="text" name="firstName" ng-model="firstName" ng-minlength="3" />\
+          </div>\
+          <div class="form-group" show-errors>\
+            <input type="text" name="lastName" ng-model="lastName" ng-minlength="3" />\
           </div>\
         </form>')($scope);
       $scope.$digest();
@@ -26,6 +31,12 @@
     };
     firstNameEl = function(el) {
       return find(el, '[name=firstName]');
+    };
+    firstNameGroup = function(el) {
+      return angular.element(find(el, '#first-name-group'));
+    };
+    expectFormGroupHasErrorClass = function(el) {
+      return expect(firstNameGroup(el).hasClass('has-error'));
     };
     describe('directive does not contain an input element with a name attribute', function() {
       return it('throws an exception', function() {
@@ -45,39 +56,51 @@
       }).toThrow();
     });
     describe("when $pristine && $invalid", function() {
-      return it("input element does not have the 'has-error' class", function() {
+      return it("does not have the 'has-error' class", function() {
         var el;
         el = compileEl();
-        return expect(el.find('div').hasClass('has-error')).toBe(false);
+        return expectFormGroupHasErrorClass(el).toBe(false);
       });
     });
     describe('when $dirty && $invalid', function() {
       describe('and blurred', function() {
-        return it("input element has the 'has-error' class", function() {
+        return it("has the 'has-error' class", function() {
           var el;
           el = compileEl();
-          $scope.userForm.firstName.$setViewValue('Pa');
+          $scope.userForm.firstName.$setViewValue(invalidName);
           triggerEvent(firstNameEl(el), 'blur');
-          return expect(el.find('div').hasClass('has-error')).toBe(true);
+          return expectFormGroupHasErrorClass(el).toBe(true);
         });
       });
       return describe('and not blurred', function() {
-        return it("input element does not have the 'has-error' class", function() {
+        return it("does not have the 'has-error' class", function() {
           var el;
           el = compileEl();
-          $scope.userForm.firstName.$setViewValue('Pa');
-          triggerEvent(firstNameEl(el), 'change');
-          return expect(el.find('div').hasClass('has-error')).toBe(false);
+          $scope.userForm.firstName.$setViewValue(invalidName);
+          triggerEvent(firstNameEl(el), 'keydown');
+          return expectFormGroupHasErrorClass(el).toBe(false);
         });
       });
     });
-    return describe('when $dirty && $valid && blurred', function() {
-      return it("input element does not have the 'has-error' class", function() {
-        var el;
-        el = compileEl();
-        $scope.userForm.firstName.$setViewValue('Paul');
-        triggerEvent(firstNameEl(el), 'blur');
-        return expect(el.find('div').hasClass('has-error')).toBe(false);
+    return describe('when $dirty && $valid', function() {
+      describe('and blurred', function() {
+        return it("does not have the 'has-error' class", function() {
+          var el;
+          el = compileEl();
+          $scope.userForm.firstName.$setViewValue(validName);
+          triggerEvent(firstNameEl(el), 'blur');
+          return expectFormGroupHasErrorClass(el).toBe(false);
+        });
+      });
+      return describe('and other input is $invalid', function() {
+        return it("does not have the 'has-error' class", function() {
+          var el;
+          el = compileEl();
+          $scope.userForm.firstName.$setViewValue(validName);
+          $scope.userForm.lastName.$setViewValue(invalidName);
+          triggerEvent(firstNameEl(el), 'blur');
+          return expectFormGroupHasErrorClass(el).toBe(false);
+        });
       });
     });
   });

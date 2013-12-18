@@ -1,6 +1,8 @@
 describe 'showErrors', ->
   $compile = undefined
   $scope = undefined
+  validName = 'Paul'
+  invalidName = 'Pa'
 
   beforeEach module('ui.bootstrap.showErrors')
   beforeEach inject((_$compile_, _$rootScope_) ->
@@ -11,8 +13,11 @@ describe 'showErrors', ->
   compileEl = ->
     el = $compile(
         '<form name="userForm">
-          <div class="form-group" show-errors>
+          <div id="first-name-group" class="form-group" show-errors>
             <input type="text" name="firstName" ng-model="firstName" ng-minlength="3" />
+          </div>
+          <div class="form-group" show-errors>
+            <input type="text" name="lastName" ng-model="lastName" ng-minlength="3" />
           </div>
         </form>'
       )($scope)
@@ -27,6 +32,12 @@ describe 'showErrors', ->
 
   firstNameEl = (el) ->
     find el, '[name=firstName]'
+
+  firstNameGroup = (el) ->
+    angular.element find(el, '#first-name-group')
+
+  expectFormGroupHasErrorClass = (el) ->
+    expect(firstNameGroup(el).hasClass('has-error'))
 
   describe 'directive does not contain an input element with a name attribute', ->
     it 'throws an exception', ->
@@ -45,28 +56,37 @@ describe 'showErrors', ->
     ).toThrow()
 
   describe "when $pristine && $invalid", ->
-    it "input element does not have the 'has-error' class", ->
+    it "does not have the 'has-error' class", ->
       el = compileEl()
-      expect(el.find('div').hasClass('has-error')).toBe false
+      expectFormGroupHasErrorClass(el).toBe false
 
   describe 'when $dirty && $invalid', ->
     describe 'and blurred', ->
-      it "input element has the 'has-error' class", ->
+      it "has the 'has-error' class", ->
         el = compileEl()
-        $scope.userForm.firstName.$setViewValue 'Pa'
+        $scope.userForm.firstName.$setViewValue invalidName
         triggerEvent firstNameEl(el), 'blur'
-        expect(el.find('div').hasClass('has-error')).toBe true
+        expectFormGroupHasErrorClass(el).toBe true
 
     describe 'and not blurred', ->
-      it "input element does not have the 'has-error' class", ->
+      it "does not have the 'has-error' class", ->
         el = compileEl()
-        $scope.userForm.firstName.$setViewValue 'Pa'
-        triggerEvent firstNameEl(el), 'change'
-        expect(el.find('div').hasClass('has-error')).toBe false
+        $scope.userForm.firstName.$setViewValue invalidName
+        triggerEvent firstNameEl(el), 'keydown'
+        expectFormGroupHasErrorClass(el).toBe false
 
-  describe 'when $dirty && $valid && blurred', ->
-    it "input element does not have the 'has-error' class", ->
-      el = compileEl()
-      $scope.userForm.firstName.$setViewValue 'Paul'
-      triggerEvent firstNameEl(el), 'blur'
-      expect(el.find('div').hasClass('has-error')).toBe false
+  describe 'when $dirty && $valid', ->
+    describe 'and blurred', ->
+      it "does not have the 'has-error' class", ->
+        el = compileEl()
+        $scope.userForm.firstName.$setViewValue validName
+        triggerEvent firstNameEl(el), 'blur'
+        expectFormGroupHasErrorClass(el).toBe false
+
+    describe 'and other input is $invalid', ->
+      it "does not have the 'has-error' class", ->
+        el = compileEl()
+        $scope.userForm.firstName.$setViewValue validName
+        $scope.userForm.lastName.$setViewValue invalidName
+        triggerEvent firstNameEl(el), 'blur'
+        expectFormGroupHasErrorClass(el).toBe false
