@@ -4,9 +4,9 @@ angular.module('ui.bootstrap.showErrors', [])
     linkFn = (scope, el, attrs, formCtrl) ->
       inputEl = el[0].querySelector("[name]")
       inputNgEl = angular.element(inputEl)
-      inputName = inputNgEl.attr('name')
+      #inputName = inputNgEl.attr('name')
       inputNgEl.bind 'blur', ->
-        el.addClass 'has-error'
+        el.addClass 'has-error' if formCtrl.$invalid
 
     {
       restrict: 'A'

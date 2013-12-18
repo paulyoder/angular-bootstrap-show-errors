@@ -9,12 +9,24 @@ describe 'showErrors', ->
   )
 
   compileEl = ->
-    el = $compile('<form name="userForm"><div class="form-group" show-errors><input type="text" name="firstName" ng-model="firstName" ng-minlength="3"></input></div></form>')($scope)
+    el = $compile(
+        '<form name="userForm">
+          <div class="form-group" show-errors>
+            <input type="text" name="firstName" ng-model="firstName" ng-minlength="3" />
+          </div>
+        </form>'
+      )($scope)
     $scope.$digest()
     el
 
-  triggerInputEvent = (el, eventName) ->
-    el.find('input')[0].dispatchEvent new Event(eventName)
+  triggerEvent = (nativeEl, eventName) ->
+    nativeEl.dispatchEvent new Event(eventName)
+
+  find = (el, selector) ->
+    el[0].querySelector selector
+
+  firstNameEl = (el) ->
+    find el, '[name=firstName]'
 
   describe 'directive does not contain an input element with a name attribute', ->
     it 'throws an exception', ->
@@ -39,15 +51,22 @@ describe 'showErrors', ->
 
   describe 'when $dirty && $invalid', ->
     describe 'and blurred', ->
-      it "input element does not have the 'has-error' class", ->
+      it "input element has the 'has-error' class", ->
         el = compileEl()
         $scope.userForm.firstName.$setViewValue 'Pa'
-        triggerInputEvent el, 'blur'
+        triggerEvent firstNameEl(el), 'blur'
         expect(el.find('div').hasClass('has-error')).toBe true
 
     describe 'and not blurred', ->
       it "input element does not have the 'has-error' class", ->
         el = compileEl()
         $scope.userForm.firstName.$setViewValue 'Pa'
-        triggerInputEvent el, 'change'
+        triggerEvent firstNameEl(el), 'change'
         expect(el.find('div').hasClass('has-error')).toBe false
+
+  describe 'when $dirty && $valid && blurred', ->
+    it "input element does not have the 'has-error' class", ->
+      el = compileEl()
+      $scope.userForm.firstName.$setViewValue 'Paul'
+      triggerEvent firstNameEl(el), 'blur'
+      expect(el.find('div').hasClass('has-error')).toBe false

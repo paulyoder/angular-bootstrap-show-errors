@@ -1,6 +1,6 @@
 (function() {
   describe('showErrors', function() {
-    var $compile, $scope, compileEl, triggerInputEvent;
+    var $compile, $scope, compileEl, find, firstNameEl, triggerEvent;
     $compile = void 0;
     $scope = void 0;
     beforeEach(module('ui.bootstrap.showErrors'));
@@ -10,12 +10,22 @@
     }));
     compileEl = function() {
       var el;
-      el = $compile('<form name="userForm"><div class="form-group" show-errors><input type="text" name="firstName" ng-model="firstName" ng-minlength="3"></input></div></form>')($scope);
+      el = $compile('<form name="userForm">\
+          <div class="form-group" show-errors>\
+            <input type="text" name="firstName" ng-model="firstName" ng-minlength="3" />\
+          </div>\
+        </form>')($scope);
       $scope.$digest();
       return el;
     };
-    triggerInputEvent = function(el, eventName) {
-      return el.find('input')[0].dispatchEvent(new Event(eventName));
+    triggerEvent = function(nativeEl, eventName) {
+      return nativeEl.dispatchEvent(new Event(eventName));
+    };
+    find = function(el, selector) {
+      return el[0].querySelector(selector);
+    };
+    firstNameEl = function(el) {
+      return find(el, '[name=firstName]');
     };
     describe('directive does not contain an input element with a name attribute', function() {
       return it('throws an exception', function() {
@@ -41,13 +51,13 @@
         return expect(el.find('div').hasClass('has-error')).toBe(false);
       });
     });
-    return describe('when $dirty && $invalid', function() {
+    describe('when $dirty && $invalid', function() {
       describe('and blurred', function() {
-        return it("input element does not have the 'has-error' class", function() {
+        return it("input element has the 'has-error' class", function() {
           var el;
           el = compileEl();
           $scope.userForm.firstName.$setViewValue('Pa');
-          triggerInputEvent(el, 'blur');
+          triggerEvent(firstNameEl(el), 'blur');
           return expect(el.find('div').hasClass('has-error')).toBe(true);
         });
       });
@@ -56,9 +66,18 @@
           var el;
           el = compileEl();
           $scope.userForm.firstName.$setViewValue('Pa');
-          triggerInputEvent(el, 'change');
+          triggerEvent(firstNameEl(el), 'change');
           return expect(el.find('div').hasClass('has-error')).toBe(false);
         });
+      });
+    });
+    return describe('when $dirty && $valid && blurred', function() {
+      return it("input element does not have the 'has-error' class", function() {
+        var el;
+        el = compileEl();
+        $scope.userForm.firstName.$setViewValue('Paul');
+        triggerEvent(firstNameEl(el), 'blur');
+        return expect(el.find('div').hasClass('has-error')).toBe(false);
       });
     });
   });
