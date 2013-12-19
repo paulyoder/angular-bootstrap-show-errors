@@ -52,75 +52,77 @@ describe 'showErrors', ->
       $compile('<div class="form-group" show-errors><input type="text" name="firstName"></input></div>')($scope)
     ).toThrow()
 
-  describe '$pristine', ->
-    describe '$invalid', ->
-      it 'has-error is absent', ->
-        el = compileEl()
-        expectFormGroupHasErrorClass(el).toBe false
+  describe '$pristine && $invalid', ->
+    it 'has-error is absent', ->
+      el = compileEl()
+      expectFormGroupHasErrorClass(el).toBe false
 
-  describe '$dirty', ->
-    describe '$invalid', ->
-      describe 'blurred', ->
-        it 'has-error is present', ->
-          el = compileEl()
-          $scope.userForm.firstName.$setViewValue invalidName
-          browserTrigger firstNameEl(el), 'blur'
-          expectFormGroupHasErrorClass(el).toBe true
+  describe '$dirty && $invalid && blurred', ->
+    it 'has-error is present', ->
+      el = compileEl()
+      $scope.userForm.firstName.$setViewValue invalidName
+      browserTrigger firstNameEl(el), 'blur'
+      expectFormGroupHasErrorClass(el).toBe true
       describe 'not blurred', ->
-        it 'has-error is absent', ->
-          el = compileEl()
-          $scope.userForm.firstName.$setViewValue invalidName
-          browserTrigger firstNameEl(el), 'keydown'
-          expectFormGroupHasErrorClass(el).toBe false
 
-    describe '$valid', ->
-      describe 'blurred', ->
-        it 'has-error is absent', ->
-          el = compileEl()
-          $scope.userForm.firstName.$setViewValue validName
-          browserTrigger firstNameEl(el), 'blur'
-          expectFormGroupHasErrorClass(el).toBe false
-        describe 'becomes $invalid again', ->
-          describe 'before blurred', ->
-            it 'has-error is present', ->
-              el = compileEl()
-              $scope.userForm.firstName.$setViewValue validName
-              browserTrigger firstNameEl(el), 'blur'
-              $scope.userForm.firstName.$setViewValue invalidName
-              $scope.$digest()
-              expectFormGroupHasErrorClass(el).toBe true
-            describe 'becomes $valid again before blurred', ->
-              it 'has-error is absent', ->
-                el = compileEl()
-                $scope.userForm.firstName.$setViewValue validName
-                browserTrigger firstNameEl(el), 'blur'
-                $scope.userForm.firstName.$setViewValue invalidName
-                $scope.$digest()
-                $scope.userForm.firstName.$setViewValue validName
-                $scope.$digest()
-                expectFormGroupHasErrorClass(el).toBe false
-          describe 'after blurred', ->
-            it 'has-error is present', ->
-              el = compileEl()
-              $scope.userForm.firstName.$setViewValue validName
-              browserTrigger firstNameEl(el), 'blur'
-              $scope.userForm.firstName.$setViewValue invalidName
-              browserTrigger firstNameEl(el), 'blur'
-              expectFormGroupHasErrorClass(el).toBe true
-            describe 'becomes $valid again after blurred', ->
-              it 'has-error is absent', ->
-                el = compileEl()
-                $scope.userForm.firstName.$setViewValue validName
-                browserTrigger firstNameEl(el), 'blur'
-                $scope.userForm.firstName.$setViewValue invalidName
-                browserTrigger firstNameEl(el), 'blur'
-                $scope.userForm.firstName.$setViewValue validName
-                browserTrigger firstNameEl(el), 'blur'
-                expectFormGroupHasErrorClass(el).toBe false
-      describe 'other input is $invalid and blurred', ->
-        it 'has-error is absent', ->
-          el = compileEl()
-          $scope.userForm.firstName.$setViewValue validName
-          $scope.userForm.lastName.$setViewValue invalidName
-          browserTrigger firstNameEl(el), 'blur'
-          expectFormGroupHasErrorClass(el).toBe false
+  describe '$dirty && $invalid && not blurred', ->
+    it 'has-error is absent', ->
+      el = compileEl()
+      $scope.userForm.firstName.$setViewValue invalidName
+      browserTrigger firstNameEl(el), 'keydown'
+      expectFormGroupHasErrorClass(el).toBe false
+
+  describe '$valid && blurred', ->
+    it 'has-error is absent', ->
+      el = compileEl()
+      $scope.userForm.firstName.$setViewValue validName
+      browserTrigger firstNameEl(el), 'blur'
+      expectFormGroupHasErrorClass(el).toBe false
+
+  describe '$valid && blurred then becomes $invalid before blurred', ->
+    it 'has-error is present', ->
+      el = compileEl()
+      $scope.userForm.firstName.$setViewValue validName
+      browserTrigger firstNameEl(el), 'blur'
+      $scope.userForm.firstName.$setViewValue invalidName
+      $scope.$digest()
+      expectFormGroupHasErrorClass(el).toBe true
+
+  describe '$valid && blurred then becomes $valid before blurred', ->
+    it 'has-error is absent', ->
+      el = compileEl()
+      $scope.userForm.firstName.$setViewValue validName
+      browserTrigger firstNameEl(el), 'blur'
+      $scope.userForm.firstName.$setViewValue invalidName
+      $scope.$digest()
+      $scope.userForm.firstName.$setViewValue validName
+      $scope.$digest()
+      expectFormGroupHasErrorClass(el).toBe false
+
+  describe '$valid && blurred then becomes $invalid after blurred', ->
+    it 'has-error is present', ->
+      el = compileEl()
+      $scope.userForm.firstName.$setViewValue validName
+      browserTrigger firstNameEl(el), 'blur'
+      $scope.userForm.firstName.$setViewValue invalidName
+      browserTrigger firstNameEl(el), 'blur'
+      expectFormGroupHasErrorClass(el).toBe true
+
+  describe '$valid && blurred then $invalid after blurred then $valid after blurred', ->
+    it 'has-error is absent', ->
+      el = compileEl()
+      $scope.userForm.firstName.$setViewValue validName
+      browserTrigger firstNameEl(el), 'blur'
+      $scope.userForm.firstName.$setViewValue invalidName
+      browserTrigger firstNameEl(el), 'blur'
+      $scope.userForm.firstName.$setViewValue validName
+      browserTrigger firstNameEl(el), 'blur'
+      expectFormGroupHasErrorClass(el).toBe false
+
+  describe '$valid && other input is $invalid && blurred', ->
+    it 'has-error is absent', ->
+      el = compileEl()
+      $scope.userForm.firstName.$setViewValue validName
+      $scope.userForm.lastName.$setViewValue invalidName
+      browserTrigger firstNameEl(el), 'blur'
+      expectFormGroupHasErrorClass(el).toBe false
