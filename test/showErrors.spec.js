@@ -93,8 +93,9 @@
         el = compileEl();
         $scope.userForm.firstName.$setViewValue(validName);
         browserTrigger(firstNameEl(el), 'blur');
-        $scope.userForm.firstName.$setViewValue(invalidName);
-        $scope.$digest();
+        $scope.$apply(function() {
+          return $scope.userForm.firstName.$setViewValue(invalidName);
+        });
         return expectFormGroupHasErrorClass(el).toBe(true);
       });
     });
@@ -104,10 +105,12 @@
         el = compileEl();
         $scope.userForm.firstName.$setViewValue(validName);
         browserTrigger(firstNameEl(el), 'blur');
-        $scope.userForm.firstName.$setViewValue(invalidName);
-        $scope.$digest();
-        $scope.userForm.firstName.$setViewValue(validName);
-        $scope.$digest();
+        $scope.$apply(function() {
+          return $scope.userForm.firstName.$setViewValue(invalidName);
+        });
+        $scope.$apply(function() {
+          return $scope.userForm.firstName.$setViewValue(validName);
+        });
         return expectFormGroupHasErrorClass(el).toBe(false);
       });
     });

@@ -84,8 +84,8 @@ describe 'showErrors', ->
       el = compileEl()
       $scope.userForm.firstName.$setViewValue validName
       browserTrigger firstNameEl(el), 'blur'
-      $scope.userForm.firstName.$setViewValue invalidName
-      $scope.$digest()
+      $scope.$apply ->
+        $scope.userForm.firstName.$setViewValue invalidName
       expectFormGroupHasErrorClass(el).toBe true
 
   describe '$valid && blurred then becomes $valid before blurred', ->
@@ -93,10 +93,10 @@ describe 'showErrors', ->
       el = compileEl()
       $scope.userForm.firstName.$setViewValue validName
       browserTrigger firstNameEl(el), 'blur'
-      $scope.userForm.firstName.$setViewValue invalidName
-      $scope.$digest()
-      $scope.userForm.firstName.$setViewValue validName
-      $scope.$digest()
+      $scope.$apply ->
+        $scope.userForm.firstName.$setViewValue invalidName
+      $scope.$apply ->
+        $scope.userForm.firstName.$setViewValue validName
       expectFormGroupHasErrorClass(el).toBe false
 
   describe '$valid && blurred then becomes $invalid after blurred', ->
