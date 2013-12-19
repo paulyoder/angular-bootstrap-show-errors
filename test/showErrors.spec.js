@@ -84,12 +84,62 @@
       });
       return describe('$valid', function() {
         describe('blurred', function() {
-          return it('has-error is absent', function() {
+          it('has-error is absent', function() {
             var el;
             el = compileEl();
             $scope.userForm.firstName.$setViewValue(validName);
             browserTrigger(firstNameEl(el), 'blur');
             return expectFormGroupHasErrorClass(el).toBe(false);
+          });
+          return describe('becomes $invalid again', function() {
+            describe('before blurred', function() {
+              it('has-error is present', function() {
+                var el;
+                el = compileEl();
+                $scope.userForm.firstName.$setViewValue(validName);
+                browserTrigger(firstNameEl(el), 'blur');
+                $scope.userForm.firstName.$setViewValue(invalidName);
+                $scope.$digest();
+                return expectFormGroupHasErrorClass(el).toBe(true);
+              });
+              return describe('becomes $valid again before blurred', function() {
+                return it('has-error is absent', function() {
+                  var el;
+                  el = compileEl();
+                  $scope.userForm.firstName.$setViewValue(validName);
+                  browserTrigger(firstNameEl(el), 'blur');
+                  $scope.userForm.firstName.$setViewValue(invalidName);
+                  $scope.$digest();
+                  $scope.userForm.firstName.$setViewValue(validName);
+                  $scope.$digest();
+                  return expectFormGroupHasErrorClass(el).toBe(false);
+                });
+              });
+            });
+            return describe('after blurred', function() {
+              it('has-error is present', function() {
+                var el;
+                el = compileEl();
+                $scope.userForm.firstName.$setViewValue(validName);
+                browserTrigger(firstNameEl(el), 'blur');
+                $scope.userForm.firstName.$setViewValue(invalidName);
+                browserTrigger(firstNameEl(el), 'blur');
+                return expectFormGroupHasErrorClass(el).toBe(true);
+              });
+              return describe('becomes $valid again after blurred', function() {
+                return it('has-error is absent', function() {
+                  var el;
+                  el = compileEl();
+                  $scope.userForm.firstName.$setViewValue(validName);
+                  browserTrigger(firstNameEl(el), 'blur');
+                  $scope.userForm.firstName.$setViewValue(invalidName);
+                  browserTrigger(firstNameEl(el), 'blur');
+                  $scope.userForm.firstName.$setViewValue(validName);
+                  browserTrigger(firstNameEl(el), 'blur');
+                  return expectFormGroupHasErrorClass(el).toBe(false);
+                });
+              });
+            });
           });
         });
         return describe('other input is $invalid and blurred', function() {

@@ -2,14 +2,22 @@
   angular.module('ui.bootstrap.showErrors', []).directive('showErrors', function () {
     var linkFn;
     linkFn = function (scope, el, attrs, formCtrl) {
-      var inputEl, inputName, inputNgEl;
+      var blurred, inputEl, inputName, inputNgEl;
+      blurred = false;
       inputEl = el[0].querySelector('[name]');
       inputNgEl = angular.element(inputEl);
       inputName = inputNgEl.attr('name');
-      return inputNgEl.bind('blur', function () {
-        if (formCtrl[inputName].$invalid) {
-          return el.addClass('has-error');
+      inputNgEl.bind('blur', function () {
+        blurred = true;
+        return el.toggleClass('has-error', formCtrl[inputName].$invalid);
+      });
+      return scope.$watch(function () {
+        return formCtrl[inputName].$invalid;
+      }, function (newVal, oldVal) {
+        if (!blurred) {
+          return;
         }
+        return el.toggleClass('has-error', newVal);
       });
     };
     return {

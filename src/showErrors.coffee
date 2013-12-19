@@ -2,11 +2,19 @@ angular.module('ui.bootstrap.showErrors', [])
   .directive 'showErrors', ->
 
     linkFn = (scope, el, attrs, formCtrl) ->
+      blurred = false
       inputEl   = el[0].querySelector("[name]")
       inputNgEl = angular.element(inputEl)
       inputName = inputNgEl.attr('name')
       inputNgEl.bind 'blur', ->
-        el.addClass 'has-error' if formCtrl[inputName].$invalid
+        blurred = true
+        el.toggleClass 'has-error', formCtrl[inputName].$invalid
+
+      scope.$watch ->
+        formCtrl[inputName].$invalid
+      , (newVal, oldVal) ->
+        return unless blurred
+        el.toggleClass 'has-error', newVal
 
     {
       restrict: 'A'

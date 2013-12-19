@@ -80,6 +80,43 @@ describe 'showErrors', ->
           $scope.userForm.firstName.$setViewValue validName
           browserTrigger firstNameEl(el), 'blur'
           expectFormGroupHasErrorClass(el).toBe false
+        describe 'becomes $invalid again', ->
+          describe 'before blurred', ->
+            it 'has-error is present', ->
+              el = compileEl()
+              $scope.userForm.firstName.$setViewValue validName
+              browserTrigger firstNameEl(el), 'blur'
+              $scope.userForm.firstName.$setViewValue invalidName
+              $scope.$digest()
+              expectFormGroupHasErrorClass(el).toBe true
+            describe 'becomes $valid again before blurred', ->
+              it 'has-error is absent', ->
+                el = compileEl()
+                $scope.userForm.firstName.$setViewValue validName
+                browserTrigger firstNameEl(el), 'blur'
+                $scope.userForm.firstName.$setViewValue invalidName
+                $scope.$digest()
+                $scope.userForm.firstName.$setViewValue validName
+                $scope.$digest()
+                expectFormGroupHasErrorClass(el).toBe false
+          describe 'after blurred', ->
+            it 'has-error is present', ->
+              el = compileEl()
+              $scope.userForm.firstName.$setViewValue validName
+              browserTrigger firstNameEl(el), 'blur'
+              $scope.userForm.firstName.$setViewValue invalidName
+              browserTrigger firstNameEl(el), 'blur'
+              expectFormGroupHasErrorClass(el).toBe true
+            describe 'becomes $valid again after blurred', ->
+              it 'has-error is absent', ->
+                el = compileEl()
+                $scope.userForm.firstName.$setViewValue validName
+                browserTrigger firstNameEl(el), 'blur'
+                $scope.userForm.firstName.$setViewValue invalidName
+                browserTrigger firstNameEl(el), 'blur'
+                $scope.userForm.firstName.$setViewValue validName
+                browserTrigger firstNameEl(el), 'blur'
+                expectFormGroupHasErrorClass(el).toBe false
       describe 'other input is $invalid and blurred', ->
         it 'has-error is absent', ->
           el = compileEl()
