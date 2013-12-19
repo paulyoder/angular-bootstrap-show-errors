@@ -126,3 +126,12 @@ describe 'showErrors', ->
       $scope.userForm.lastName.$setViewValue invalidName
       browserTrigger firstNameEl(el), 'blur'
       expectFormGroupHasErrorClass(el).toBe false
+
+  describe '$invalid && showErrorsCheckValidity is set before blurred', ->
+    it 'has-error is present', ->
+      el = compileEl()
+      $scope.userForm.firstName.$setViewValue invalidName
+      $scope.$apply ->
+        $scope.showErrorsCheckValidity = true
+      expectFormGroupHasErrorClass(el).toBe true
+      

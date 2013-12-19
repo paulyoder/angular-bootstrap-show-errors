@@ -11,13 +11,21 @@
         blurred = true;
         return el.toggleClass('has-error', formCtrl[inputName].$invalid);
       });
-      return scope.$watch(function () {
+      scope.$watch(function () {
         return formCtrl[inputName].$invalid;
       }, function (newVal, oldVal) {
         if (!blurred) {
           return;
         }
         return el.toggleClass('has-error', newVal);
+      });
+      return scope.$watch(function () {
+        return scope.showErrorsCheckValidity;
+      }, function (newVal) {
+        if (!newVal) {
+          return;
+        }
+        return el.toggleClass('has-error', formCtrl[inputName].$invalid);
       });
     };
     return {

@@ -135,7 +135,7 @@
         return expectFormGroupHasErrorClass(el).toBe(false);
       });
     });
-    return describe('$valid && other input is $invalid && blurred', function() {
+    describe('$valid && other input is $invalid && blurred', function() {
       return it('has-error is absent', function() {
         var el;
         el = compileEl();
@@ -143,6 +143,17 @@
         $scope.userForm.lastName.$setViewValue(invalidName);
         browserTrigger(firstNameEl(el), 'blur');
         return expectFormGroupHasErrorClass(el).toBe(false);
+      });
+    });
+    return describe('$invalid && showErrorsCheckValidity is set before blurred', function() {
+      return it('has-error is present', function() {
+        var el;
+        el = compileEl();
+        $scope.userForm.firstName.$setViewValue(invalidName);
+        $scope.$apply(function() {
+          return $scope.showErrorsCheckValidity = true;
+        });
+        return expectFormGroupHasErrorClass(el).toBe(true);
       });
     });
   });
