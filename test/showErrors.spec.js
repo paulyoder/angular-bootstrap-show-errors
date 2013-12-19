@@ -52,51 +52,55 @@
         return $compile('<div class="form-group" show-errors><input type="text" name="firstName"></input></div>')($scope);
       }).toThrow();
     });
-    describe("when $pristine && $invalid", function() {
-      return it("does not have the 'has-error' class", function() {
-        var el;
-        el = compileEl();
-        return expectFormGroupHasErrorClass(el).toBe(false);
-      });
-    });
-    describe('when $dirty && $invalid', function() {
-      describe('and blurred', function() {
-        return it("has the 'has-error' class", function() {
+    describe('$pristine', function() {
+      return describe('$invalid', function() {
+        return it('has-error is absent', function() {
           var el;
           el = compileEl();
-          $scope.userForm.firstName.$setViewValue(invalidName);
-          browserTrigger(firstNameEl(el), 'blur');
-          return expectFormGroupHasErrorClass(el).toBe(true);
-        });
-      });
-      return describe('and not blurred', function() {
-        return it("does not have the 'has-error' class", function() {
-          var el;
-          el = compileEl();
-          $scope.userForm.firstName.$setViewValue(invalidName);
-          browserTrigger(firstNameEl(el), 'keydown');
           return expectFormGroupHasErrorClass(el).toBe(false);
         });
       });
     });
-    return describe('when $dirty && $valid', function() {
-      describe('and blurred', function() {
-        return it("does not have the 'has-error' class", function() {
-          var el;
-          el = compileEl();
-          $scope.userForm.firstName.$setViewValue(validName);
-          browserTrigger(firstNameEl(el), 'blur');
-          return expectFormGroupHasErrorClass(el).toBe(false);
+    return describe('$dirty', function() {
+      describe('$invalid', function() {
+        describe('blurred', function() {
+          return it('has-error is present', function() {
+            var el;
+            el = compileEl();
+            $scope.userForm.firstName.$setViewValue(invalidName);
+            browserTrigger(firstNameEl(el), 'blur');
+            return expectFormGroupHasErrorClass(el).toBe(true);
+          });
+        });
+        return describe('not blurred', function() {
+          return it('has-error is absent', function() {
+            var el;
+            el = compileEl();
+            $scope.userForm.firstName.$setViewValue(invalidName);
+            browserTrigger(firstNameEl(el), 'keydown');
+            return expectFormGroupHasErrorClass(el).toBe(false);
+          });
         });
       });
-      return describe('and other input is $invalid', function() {
-        return it("does not have the 'has-error' class", function() {
-          var el;
-          el = compileEl();
-          $scope.userForm.firstName.$setViewValue(validName);
-          $scope.userForm.lastName.$setViewValue(invalidName);
-          browserTrigger(firstNameEl(el), 'blur');
-          return expectFormGroupHasErrorClass(el).toBe(false);
+      return describe('$valid', function() {
+        describe('blurred', function() {
+          return it('has-error is absent', function() {
+            var el;
+            el = compileEl();
+            $scope.userForm.firstName.$setViewValue(validName);
+            browserTrigger(firstNameEl(el), 'blur');
+            return expectFormGroupHasErrorClass(el).toBe(false);
+          });
+        });
+        return describe('other input is $invalid and blurred', function() {
+          return it('has-error is absent', function() {
+            var el;
+            el = compileEl();
+            $scope.userForm.firstName.$setViewValue(validName);
+            $scope.userForm.lastName.$setViewValue(invalidName);
+            browserTrigger(firstNameEl(el), 'blur');
+            return expectFormGroupHasErrorClass(el).toBe(false);
+          });
         });
       });
     });
