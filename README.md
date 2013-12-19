@@ -18,8 +18,10 @@ Quick Start
 1. Include the `ui.bootstrap.showErrors` module in your Angular app
 2. Add the `show-errors` attribute on the form div element that contains the `form-group` class
 
+```html
     <form name="userForm">
       <div class="form-group" show-errors>
         <input type="text" name="firstName" ng-model="firstName" ng-required />
       </div>
     </form>
+```
