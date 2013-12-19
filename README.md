@@ -30,7 +30,10 @@ Force Validity Check
 ---
 By default this directive doesn't check the validity until the user tabs off the input element. However, there are times you want to show invalid form elements even if the user has not tabbed off. (e.g. before saving the form)
 
-To force validity check, set `showErrorsCheckValidity` to true on the form control
+To force validity check, set `showErrorsCheckValidity` to true on the form control.
+
+#### Example
+
 
 ```html
 <form name="userForm">
@@ -54,6 +57,8 @@ $scope.save = function() {
 Reset Validity
 ---
 If you have functionality to reset your form, you can set `showErrorsReset` to true to remove any errors on the form elements.
+
+#### Example
 
 ```html
 <form name="userForm">
