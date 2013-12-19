@@ -1,13 +1,15 @@
 describe 'showErrors', ->
   $compile = undefined
   $scope = undefined
+  $timeout = undefined
   validName = 'Paul'
   invalidName = 'Pa'
 
   beforeEach module('ui.bootstrap.showErrors')
-  beforeEach inject((_$compile_, _$rootScope_) ->
+  beforeEach inject((_$compile_, _$rootScope_, _$timeout_) ->
     $compile = _$compile_
     $scope = _$rootScope_
+    $timeout = _$timeout_
   )
 
   compileEl = ->
@@ -147,3 +149,25 @@ describe 'showErrors', ->
       $scope.$apply ->
         $scope.showErrorsCheckValidity = true
       expectFormGroupHasErrorClass(el).toBe true
+
+  describe 'showErrorsReset', ->
+    it 'removes has-error', ->
+      el = compileEl()
+      $scope.userForm.firstName.$setViewValue invalidName
+      browserTrigger firstNameEl(el), 'blur'
+      $scope.$apply ->
+        $scope.showErrorsReset = true
+      $timeout.flush()
+      expectFormGroupHasErrorClass(el).toBe false
+
+  describe 'showErrorsReset then invalid without blurred', ->
+    it 'has-error is absent', ->
+      el = compileEl()
+      $scope.userForm.firstName.$setViewValue validName
+      browserTrigger firstNameEl(el), 'blur'
+      $scope.$apply ->
+        $scope.showErrorsReset = true
+      $timeout.flush()
+      $scope.$apply ->
+        $scope.userForm.firstName.$setViewValue invalidName
+      expectFormGroupHasErrorClass(el).toBe false

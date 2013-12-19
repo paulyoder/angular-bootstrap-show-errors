@@ -1,14 +1,16 @@
 (function() {
   describe('showErrors', function() {
-    var $compile, $scope, compileEl, expectFormGroupHasErrorClass, find, firstNameEl, firstNameGroup, invalidName, validName;
+    var $compile, $scope, $timeout, compileEl, expectFormGroupHasErrorClass, find, firstNameEl, firstNameGroup, invalidName, validName;
     $compile = void 0;
     $scope = void 0;
+    $timeout = void 0;
     validName = 'Paul';
     invalidName = 'Pa';
     beforeEach(module('ui.bootstrap.showErrors'));
-    beforeEach(inject(function(_$compile_, _$rootScope_) {
+    beforeEach(inject(function(_$compile_, _$rootScope_, _$timeout_) {
       $compile = _$compile_;
-      return $scope = _$rootScope_;
+      $scope = _$rootScope_;
+      return $timeout = _$timeout_;
     }));
     compileEl = function() {
       var el;
@@ -159,7 +161,7 @@
         return expectFormGroupHasErrorClass(el).toBe(true);
       });
     });
-    return describe('showErrorsCheckValidity is called twice', function() {
+    describe('showErrorsCheckValidity is called twice', function() {
       return it('correctly applies the has-error class', function() {
         var el;
         el = compileEl();
@@ -174,6 +176,35 @@
           return $scope.showErrorsCheckValidity = true;
         });
         return expectFormGroupHasErrorClass(el).toBe(true);
+      });
+    });
+    describe('showErrorsReset', function() {
+      return it('removes has-error', function() {
+        var el;
+        el = compileEl();
+        $scope.userForm.firstName.$setViewValue(invalidName);
+        browserTrigger(firstNameEl(el), 'blur');
+        $scope.$apply(function() {
+          return $scope.showErrorsReset = true;
+        });
+        $timeout.flush();
+        return expectFormGroupHasErrorClass(el).toBe(false);
+      });
+    });
+    return describe('showErrorsReset then invalid without blurred', function() {
+      return it('has-error is absent', function() {
+        var el;
+        el = compileEl();
+        $scope.userForm.firstName.$setViewValue(validName);
+        browserTrigger(firstNameEl(el), 'blur');
+        $scope.$apply(function() {
+          return $scope.showErrorsReset = true;
+        });
+        $timeout.flush();
+        $scope.$apply(function() {
+          return $scope.userForm.firstName.$setViewValue(invalidName);
+        });
+        return expectFormGroupHasErrorClass(el).toBe(false);
       });
     });
   });
