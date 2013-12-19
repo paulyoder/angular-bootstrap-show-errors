@@ -25,7 +25,8 @@
         if (!newVal) {
           return;
         }
-        return el.toggleClass('has-error', formCtrl[inputName].$invalid);
+        el.toggleClass('has-error', formCtrl[inputName].$invalid);
+        return scope.showErrorsCheckValidity = false;
       });
     };
     return {

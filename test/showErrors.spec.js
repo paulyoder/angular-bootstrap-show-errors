@@ -148,10 +148,27 @@
         return expectFormGroupHasErrorClass(el).toBe(false);
       });
     });
-    return describe('$invalid && showErrorsCheckValidity is set before blurred', function() {
+    describe('$invalid && showErrorsCheckValidity is set before blurred', function() {
       return it('has-error is present', function() {
         var el;
         el = compileEl();
+        $scope.userForm.firstName.$setViewValue(invalidName);
+        $scope.$apply(function() {
+          return $scope.showErrorsCheckValidity = true;
+        });
+        return expectFormGroupHasErrorClass(el).toBe(true);
+      });
+    });
+    return describe('showErrorsCheckValidity is called twice', function() {
+      return it('correctly applies the has-error class', function() {
+        var el;
+        el = compileEl();
+        $scope.userForm.firstName.$setViewValue(invalidName);
+        $scope.$apply(function() {
+          return $scope.showErrorsCheckValidity = true;
+        });
+        $scope.userForm.firstName.$setViewValue(validName);
+        browserTrigger(firstNameEl(el), 'blur');
         $scope.userForm.firstName.$setViewValue(invalidName);
         $scope.$apply(function() {
           return $scope.showErrorsCheckValidity = true;

@@ -135,3 +135,15 @@ describe 'showErrors', ->
         $scope.showErrorsCheckValidity = true
       expectFormGroupHasErrorClass(el).toBe true
       
+  describe 'showErrorsCheckValidity is called twice', ->
+    it 'correctly applies the has-error class', ->
+      el = compileEl()
+      $scope.userForm.firstName.$setViewValue invalidName
+      $scope.$apply ->
+        $scope.showErrorsCheckValidity = true
+      $scope.userForm.firstName.$setViewValue validName
+      browserTrigger firstNameEl(el), 'blur'
+      $scope.userForm.firstName.$setViewValue invalidName
+      $scope.$apply ->
+        $scope.showErrorsCheckValidity = true
+      expectFormGroupHasErrorClass(el).toBe true

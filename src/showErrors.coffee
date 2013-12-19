@@ -21,6 +21,7 @@ angular.module('ui.bootstrap.showErrors', [])
       , (newVal) ->
         return unless newVal
         el.toggleClass 'has-error', formCtrl[inputName].$invalid
+        scope.showErrorsCheckValidity = false
 
     {
       restrict: 'A'
