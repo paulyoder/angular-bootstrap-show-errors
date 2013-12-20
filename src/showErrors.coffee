@@ -6,13 +6,14 @@ angular.module('ui.bootstrap.showErrors', [])
       inputEl   = el[0].querySelector("[name]")
       inputNgEl = angular.element(inputEl)
       inputName = inputNgEl.attr('name')
+
       inputNgEl.bind 'blur', ->
         blurred = true
         el.toggleClass 'has-error', formCtrl[inputName].$invalid
 
       scope.$watch ->
         formCtrl[inputName].$invalid
-      , (newVal, oldVal) ->
+      , (newVal) ->
         return unless blurred
         el.toggleClass 'has-error', newVal
 
@@ -27,11 +28,12 @@ angular.module('ui.bootstrap.showErrors', [])
         scope.showErrorsReset
       , (newVal) ->
         return unless newVal
-        # want to run this after the current digest cycle
         $timeout ->
+          # want to run this after the current digest cycle
           el.removeClass 'has-error'
           blurred = false
         , 0, false
+        scope.showErrorsReset = false
 
     {
       restrict: 'A'

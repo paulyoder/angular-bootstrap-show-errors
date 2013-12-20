@@ -15,7 +15,7 @@
         });
         scope.$watch(function () {
           return formCtrl[inputName].$invalid;
-        }, function (newVal, oldVal) {
+        }, function (newVal) {
           if (!blurred) {
             return;
           }
@@ -36,10 +36,11 @@
           if (!newVal) {
             return;
           }
-          return $timeout(function () {
+          $timeout(function () {
             el.removeClass('has-error');
             return blurred = false;
           }, 0, false);
+          return scope.showErrorsReset = false;
         });
       };
       return {

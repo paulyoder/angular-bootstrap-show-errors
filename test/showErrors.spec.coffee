@@ -171,3 +171,17 @@ describe 'showErrors', ->
       $scope.$apply ->
         $scope.userForm.firstName.$setViewValue invalidName
       expectFormGroupHasErrorClass(el).toBe false
+
+  describe 'call showErrorsReset multiple times', ->
+    it 'removes has-error', ->
+      el = compileEl()
+      $scope.userForm.firstName.$setViewValue invalidName
+      browserTrigger firstNameEl(el), 'blur'
+      $scope.$apply ->
+        $scope.showErrorsReset = true
+      $timeout.flush()
+      browserTrigger firstNameEl(el), 'blur'
+      $scope.$apply ->
+        $scope.showErrorsReset = true
+      $timeout.flush()
+      expectFormGroupHasErrorClass(el).toBe false

@@ -191,7 +191,7 @@
         return expectFormGroupHasErrorClass(el).toBe(false);
       });
     });
-    return describe('showErrorsReset then invalid without blurred', function() {
+    describe('showErrorsReset then invalid without blurred', function() {
       return it('has-error is absent', function() {
         var el;
         el = compileEl();
@@ -204,6 +204,24 @@
         $scope.$apply(function() {
           return $scope.userForm.firstName.$setViewValue(invalidName);
         });
+        return expectFormGroupHasErrorClass(el).toBe(false);
+      });
+    });
+    return describe('call showErrorsReset multiple times', function() {
+      return it('removes has-error', function() {
+        var el;
+        el = compileEl();
+        $scope.userForm.firstName.$setViewValue(invalidName);
+        browserTrigger(firstNameEl(el), 'blur');
+        $scope.$apply(function() {
+          return $scope.showErrorsReset = true;
+        });
+        $timeout.flush();
+        browserTrigger(firstNameEl(el), 'blur');
+        $scope.$apply(function() {
+          return $scope.showErrorsReset = true;
+        });
+        $timeout.flush();
         return expectFormGroupHasErrorClass(el).toBe(false);
       });
     });
