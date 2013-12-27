@@ -46,7 +46,7 @@ To force validity check, set `showErrorsCheckValidity` to true on the form contr
 
 ```javascript
 $scope.save = function() {
-  $scope.userForm.showErrorsCheckValidity = true
+  $scope.showErrorsCheckValidity = true
   
   if ($scope.userForm.$valid) {
     // save the user
@@ -71,7 +71,7 @@ If you have functionality to reset your form, you can set `showErrorsReset` to t
 
 ```javascript
 $scope.reset = function() {
-  $scope.userForm.showErrorsReset = true
+  $scope.showErrorsReset = true
 }
 ```
     
