@@ -39,7 +39,7 @@
           $timeout(function () {
             el.removeClass('has-error');
             return blurred = false;
-          }, 0, false);
+          });
           return scope.showErrorsReset = false;
         });
       };

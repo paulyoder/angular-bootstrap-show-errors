@@ -32,7 +32,6 @@ angular.module('ui.bootstrap.showErrors', [])
           # want to run this after the current digest cycle
           el.removeClass 'has-error'
           blurred = false
-        , 0, false
         scope.showErrorsReset = false
 
     {
