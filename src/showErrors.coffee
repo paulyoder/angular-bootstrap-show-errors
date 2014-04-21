@@ -17,22 +17,15 @@ angular.module('ui.bootstrap.showErrors', [])
         return unless blurred
         el.toggleClass 'has-error', newVal
 
-      scope.$watch ->
-        scope.showErrorsCheckValidity
-      , (newVal) ->
-        return unless newVal
+      scope.$on 'show-errors-check-validity', ->
         el.toggleClass 'has-error', formCtrl[inputName].$invalid
-        scope.showErrorsCheckValidity = false
 
-      scope.$watch ->
-        scope.showErrorsReset
-      , (newVal) ->
-        return unless newVal
+      scope.$on 'show-errors-reset', ->
         $timeout ->
           # want to run this after the current digest cycle
           el.removeClass 'has-error'
           blurred = false
-        scope.showErrorsReset = false
+        , 0, false
 
     {
       restrict: 'A'

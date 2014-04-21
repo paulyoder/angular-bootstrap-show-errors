@@ -1,7 +1,9 @@
 Angular Bootstrap Show Errors
 =============================
 
-This Angular directive intelligently applies the 'has-error' class to show errors in forms that use Bootstrap 3.
+An Angular directive for Bootstrap 3 that intelligently applies the 'has-error' class to invalid form fields.
+
+See the [Bootstrap Form Validation Done Right in AngularJS](http://blog.yodersolutions.com/bootstrap-form-validation-done-right-in-angularjs?utm_source=github&utm_medium=readme&utm_campaign=code) blog post to read about the benefits of using this directive.
 
 Installation
 ---
@@ -9,7 +11,7 @@ With Bower
 
     bower install angular-bootstrap-show-errors
 
-Or Manually
+Manually
 
 Copy the `src/showErrors.js` or `src/showErrors.min.js` file into your project.
 
@@ -30,7 +32,7 @@ Force Validity Check
 ---
 By default this directive doesn't check the validity until the user tabs off the input element. However, there are times you want to show invalid form elements even if the user has not tabbed off. (e.g. before saving the form)
 
-To force validity check, set `showErrorsCheckValidity` to true on the form control.
+To force the validity check, broadcast the `show-errors-check-validity` event.
 
 #### Example
 
@@ -46,7 +48,7 @@ To force validity check, set `showErrorsCheckValidity` to true on the form contr
 
 ```javascript
 $scope.save = function() {
-  $scope.showErrorsCheckValidity = true
+  $scope.$broadcast('show-errors-check-validity');
   
   if ($scope.userForm.$valid) {
     // save the user
@@ -54,9 +56,9 @@ $scope.save = function() {
 }
 ```
 
-Reset Validity
+Reset
 ---
-If you have functionality to reset your form, you can set `showErrorsReset` to true to remove any errors on the form elements.
+If you have functionality to reset your form, you can broadcast the 'show-errors-reset' event to remove any errors on the form elements.
 
 #### Example
 
@@ -71,7 +73,7 @@ If you have functionality to reset your form, you can set `showErrorsReset` to t
 
 ```javascript
 $scope.reset = function() {
-  $scope.showErrorsReset = true
+  $scope.$broadcast('show-errors-reset');
 }
 ```
     

@@ -155,9 +155,7 @@
         var el;
         el = compileEl();
         $scope.userForm.firstName.$setViewValue(invalidName);
-        $scope.$apply(function() {
-          return $scope.showErrorsCheckValidity = true;
-        });
+        $scope.$broadcast('show-errors-check-validity');
         return expectFormGroupHasErrorClass(el).toBe(true);
       });
     });
@@ -166,9 +164,7 @@
         var el;
         el = compileEl();
         $scope.userForm.firstName.$setViewValue(invalidName);
-        $scope.$apply(function() {
-          return $scope.showErrorsCheckValidity = true;
-        });
+        $scope.$broadcast('show-errors-check-validity');
         $scope.userForm.firstName.$setViewValue(validName);
         browserTrigger(firstNameEl(el), 'blur');
         $scope.userForm.firstName.$setViewValue(invalidName);
@@ -184,9 +180,7 @@
         el = compileEl();
         $scope.userForm.firstName.$setViewValue(invalidName);
         browserTrigger(firstNameEl(el), 'blur');
-        $scope.$apply(function() {
-          return $scope.showErrorsReset = true;
-        });
+        $scope.$broadcast('show-errors-reset');
         $timeout.flush();
         return expectFormGroupHasErrorClass(el).toBe(false);
       });
@@ -197,9 +191,7 @@
         el = compileEl();
         $scope.userForm.firstName.$setViewValue(validName);
         browserTrigger(firstNameEl(el), 'blur');
-        $scope.$apply(function() {
-          return $scope.showErrorsReset = true;
-        });
+        $scope.$broadcast('show-errors-reset');
         $timeout.flush();
         $scope.$apply(function() {
           return $scope.userForm.firstName.$setViewValue(invalidName);
@@ -213,14 +205,10 @@
         el = compileEl();
         $scope.userForm.firstName.$setViewValue(invalidName);
         browserTrigger(firstNameEl(el), 'blur');
-        $scope.$apply(function() {
-          return $scope.showErrorsReset = true;
-        });
+        $scope.$broadcast('show-errors-reset');
         $timeout.flush();
         browserTrigger(firstNameEl(el), 'blur');
-        $scope.$apply(function() {
-          return $scope.showErrorsReset = true;
-        });
+        $scope.$broadcast('show-errors-reset');
         $timeout.flush();
         return expectFormGroupHasErrorClass(el).toBe(false);
       });

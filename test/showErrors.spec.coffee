@@ -133,16 +133,14 @@ describe 'showErrors', ->
     it 'has-error is present', ->
       el = compileEl()
       $scope.userForm.firstName.$setViewValue invalidName
-      $scope.$apply ->
-        $scope.showErrorsCheckValidity = true
+      $scope.$broadcast 'show-errors-check-validity'
       expectFormGroupHasErrorClass(el).toBe true
       
   describe 'showErrorsCheckValidity is called twice', ->
     it 'correctly applies the has-error class', ->
       el = compileEl()
       $scope.userForm.firstName.$setViewValue invalidName
-      $scope.$apply ->
-        $scope.showErrorsCheckValidity = true
+      $scope.$broadcast 'show-errors-check-validity'
       $scope.userForm.firstName.$setViewValue validName
       browserTrigger firstNameEl(el), 'blur'
       $scope.userForm.firstName.$setViewValue invalidName
@@ -155,8 +153,7 @@ describe 'showErrors', ->
       el = compileEl()
       $scope.userForm.firstName.$setViewValue invalidName
       browserTrigger firstNameEl(el), 'blur'
-      $scope.$apply ->
-        $scope.showErrorsReset = true
+      $scope.$broadcast 'show-errors-reset'
       $timeout.flush()
       expectFormGroupHasErrorClass(el).toBe false
 
@@ -165,8 +162,7 @@ describe 'showErrors', ->
       el = compileEl()
       $scope.userForm.firstName.$setViewValue validName
       browserTrigger firstNameEl(el), 'blur'
-      $scope.$apply ->
-        $scope.showErrorsReset = true
+      $scope.$broadcast 'show-errors-reset'
       $timeout.flush()
       $scope.$apply ->
         $scope.userForm.firstName.$setViewValue invalidName
@@ -177,11 +173,9 @@ describe 'showErrors', ->
       el = compileEl()
       $scope.userForm.firstName.$setViewValue invalidName
       browserTrigger firstNameEl(el), 'blur'
-      $scope.$apply ->
-        $scope.showErrorsReset = true
+      $scope.$broadcast 'show-errors-reset'
       $timeout.flush()
       browserTrigger firstNameEl(el), 'blur'
-      $scope.$apply ->
-        $scope.showErrorsReset = true
+      $scope.$broadcast 'show-errors-reset'
       $timeout.flush()
       expectFormGroupHasErrorClass(el).toBe false

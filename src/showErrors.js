@@ -21,26 +21,14 @@
           }
           return el.toggleClass('has-error', newVal);
         });
-        scope.$watch(function () {
-          return scope.showErrorsCheckValidity;
-        }, function (newVal) {
-          if (!newVal) {
-            return;
-          }
-          el.toggleClass('has-error', formCtrl[inputName].$invalid);
-          return scope.showErrorsCheckValidity = false;
+        scope.$on('show-errors-check-validity', function () {
+          return el.toggleClass('has-error', formCtrl[inputName].$invalid);
         });
-        return scope.$watch(function () {
-          return scope.showErrorsReset;
-        }, function (newVal) {
-          if (!newVal) {
-            return;
-          }
-          $timeout(function () {
+        return scope.$on('show-errors-reset', function () {
+          return $timeout(function () {
             el.removeClass('has-error');
             return blurred = false;
-          });
-          return scope.showErrorsReset = false;
+          }, 0, false);
         });
       };
       return {
