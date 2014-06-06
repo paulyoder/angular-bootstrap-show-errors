@@ -9,6 +9,9 @@
         inputEl = el[0].querySelector('[name]');
         inputNgEl = angular.element(inputEl);
         inputName = inputNgEl.attr('name');
+        if (!inputName) {
+          throw 'show-errors element has no child input elements with a \'name\' attribute';
+        }
         inputNgEl.bind('blur', function () {
           blurred = true;
           return el.toggleClass('has-error', formCtrl[inputName].$invalid);
@@ -37,9 +40,6 @@
         compile: function (elem, attrs) {
           if (!elem.hasClass('form-group')) {
             throw 'show-errors element does not have the \'form-group\' class';
-          }
-          if (elem[0].querySelector('input[name]') == null) {
-            throw 'show-errors element has no child input elements with a \'name\' attribute';
           }
           return linkFn;
         }

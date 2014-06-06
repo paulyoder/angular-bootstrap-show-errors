@@ -6,6 +6,8 @@ angular.module('ui.bootstrap.showErrors', [])
       inputEl   = el[0].querySelector("[name]")
       inputNgEl = angular.element(inputEl)
       inputName = inputNgEl.attr('name')
+      unless inputName
+        throw "show-errors element has no child input elements with a 'name' attribute"
 
       inputNgEl.bind 'blur', ->
         blurred = true
@@ -33,7 +35,5 @@ angular.module('ui.bootstrap.showErrors', [])
       compile: (elem, attrs) ->
         unless elem.hasClass 'form-group'
           throw "show-errors element does not have the 'form-group' class"
-        unless elem[0].querySelector('input[name]')?
-          throw "show-errors element has no child input elements with a 'name' attribute"
         linkFn
     }

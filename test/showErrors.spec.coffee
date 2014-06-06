@@ -41,7 +41,7 @@ describe 'showErrors', ->
   describe 'directive does not contain an input element with a name attribute', ->
     it 'throws an exception', ->
       expect( ->
-        $compile('<div class="form-group" show-errors><input type="text"></input></div>')($scope)
+        $compile('<form name="userForm"><div class="form-group" show-errors><input type="text"></input></div></form>')($scope)
       ).toThrow "show-errors element has no child input elements with a 'name' attribute"
 
   it "throws an exception if the element doesn't have the form-group class", ->
