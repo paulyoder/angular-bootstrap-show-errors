@@ -18,11 +18,11 @@
         });
         scope.$watch(function () {
           return formCtrl[inputName].$invalid;
-        }, function (newVal) {
-          if (!blurred) {
+        }, function (invalid) {
+          if (!blurred && invalid) {
             return;
           }
-          return el.toggleClass('has-error', newVal);
+          return el.toggleClass('has-error', invalid);
         });
         scope.$on('show-errors-check-validity', function () {
           return el.toggleClass('has-error', formCtrl[inputName].$invalid);

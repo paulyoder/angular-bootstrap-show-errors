@@ -15,9 +15,9 @@ angular.module('ui.bootstrap.showErrors', [])
 
       scope.$watch ->
         formCtrl[inputName].$invalid
-      , (newVal) ->
-        return unless blurred
-        el.toggleClass 'has-error', newVal
+      , (invalid) ->
+        return if !blurred && invalid
+        el.toggleClass 'has-error', invalid
 
       scope.$on 'show-errors-check-validity', ->
         el.toggleClass 'has-error', formCtrl[inputName].$invalid
