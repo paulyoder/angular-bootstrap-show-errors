@@ -1,6 +1,6 @@
 (function() {
   describe('showErrors', function() {
-    var $compile, $scope, $timeout, compileEl, expectFormGroupHasErrorClass, find, firstNameEl, firstNameGroup, invalidName, validName;
+    var $compile, $scope, $timeout, compileEl, expectFormGroupHasErrorClass, expectFormGroupHasSuccessClass, find, firstNameEl, firstNameGroup, invalidName, validName;
     $compile = void 0;
     $scope = void 0;
     $timeout = void 0;
@@ -37,6 +37,9 @@
     expectFormGroupHasErrorClass = function(el) {
       return expect(firstNameGroup(el).hasClass('has-error'));
     };
+    expectFormGroupHasSuccessClass = function(el) {
+      return expect(firstNameGroup(el).hasClass('has-success'));
+    };
     describe('directive does not contain an input element with a name attribute', function() {
       return it('throws an exception', function() {
         return expect(function() {
@@ -61,6 +64,13 @@
         return expectFormGroupHasErrorClass(el).toBe(false);
       });
     });
+    describe('$pristine && $valid', function() {
+      return it('has-success is present', function() {
+        var el;
+        el = compileEl();
+        return expectFormGroupHasSuccessClass(el).toBe(true);
+      });
+    });
     describe('$dirty && $invalid && blurred', function() {
       return it('has-error is present', function() {
         var el;
@@ -68,6 +78,16 @@
         $scope.userForm.firstName.$setViewValue(invalidName);
         browserTrigger(firstNameEl(el), 'blur');
         expectFormGroupHasErrorClass(el).toBe(true);
+        return describe('not blurred', function() {});
+      });
+    });
+    describe('$dirty && $valid && blurred', function() {
+      return it('has-success is present', function() {
+        var el;
+        el = compileEl();
+        $scope.userForm.firstName.$setViewValue(validName);
+        browserTrigger(firstNameEl(el), 'blur');
+        expectFormGroupHasSuccessClass(el).toBe(true);
         return describe('not blurred', function() {});
       });
     });

@@ -12,20 +12,24 @@ angular.module('ui.bootstrap.showErrors', [])
       inputNgEl.bind 'blur', ->
         blurred = true
         el.toggleClass 'has-error', formCtrl[inputName].$invalid
+        el.toggleClass 'has-success', formCtrl[inputName].$valid
 
       scope.$watch ->
         formCtrl[inputName].$invalid
       , (invalid) ->
         return if !blurred && invalid
         el.toggleClass 'has-error', invalid
+        el.toggleClass 'has-success', valid
 
       scope.$on 'show-errors-check-validity', ->
         el.toggleClass 'has-error', formCtrl[inputName].$invalid
+        el.toggleClass 'has-success', formCtrl[inputName].$valid
 
       scope.$on 'show-errors-reset', ->
         $timeout ->
           # want to run this after the current digest cycle
           el.removeClass 'has-error'
+          el.removeClass 'has-success'
           blurred = false
         , 0, false
 

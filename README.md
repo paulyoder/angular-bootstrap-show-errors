@@ -1,15 +1,17 @@
-Angular Bootstrap Show Errors
+Angular Bootstrap Show Validation
 =============================
 
-An Angular directive for Bootstrap 3 that intelligently applies the 'has-error' class to invalid form fields.
+An Angular directive for Bootstrap 3 that intelligently applies the 'has-error' and 'has-success' classes to validated form fields.
 
 See the [Bootstrap Form Validation Done Right in AngularJS](http://blog.yodersolutions.com/bootstrap-form-validation-done-right-in-angularjs?utm_source=github&utm_medium=readme&utm_campaign=code) blog post to read about the benefits of using this directive.
+
+My fork includes setting the 'has-success' class. Everything else works just like the original code
 
 Installation
 ---
 With Bower
 
-    bower install angular-bootstrap-show-errors
+    bower install angular-bootstrap-show-validation
 
 Manually
 

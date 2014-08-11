@@ -1,10 +1,10 @@
 {
-  "name": "angular-bootstrap-show-errors",
-  "version": "1.0.2",
-  "description": "An Angular Directive to intelligently show form validation errors",
-  "author": "https://github.com/paulyoder/angular-bootstrap-show-errors/graphs/contributors",
+  "name": "angular-bootstrap-show-validation",
+  "version": "1.0.0",
+  "description": "An Angular Directive to intelligently show form validation results",
+  "author": "https://github.com/jouke/angular-bootstrap-show-validation/graphs/contributors",
   "license": "MIT",
-  "homepage": "https://github.com/angular-bootstrap-show-errors",
+  "homepage": "https://github.com/jouke/angular-bootstrap-show-validation",
   "main": "src/showErrors.js",
   "dependencies": {},
   "devDependencies": {
@@ -22,6 +22,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/dalelotts/angular-bootstrap-datetimepicker.git"
+    "url": "git@github.com:jouke/angular-bootstrap-show-validation.git"
   }
 }

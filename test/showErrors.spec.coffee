@@ -38,6 +38,9 @@ describe 'showErrors', ->
   expectFormGroupHasErrorClass = (el) ->
     expect(firstNameGroup(el).hasClass('has-error'))
 
+  expectFormGroupHasSuccessClass = (el) ->
+    expect(firstNameGroup(el).hasClass('has-success'))
+
   describe 'directive does not contain an input element with a name attribute', ->
     it 'throws an exception', ->
       expect( ->
@@ -59,12 +62,25 @@ describe 'showErrors', ->
       el = compileEl()
       expectFormGroupHasErrorClass(el).toBe false
 
+  describe '$pristine && $valid', ->
+    it 'has-success is present', ->
+      el = compileEl()
+      expectFormGroupHasSuccessClass(el).toBe true
+
   describe '$dirty && $invalid && blurred', ->
     it 'has-error is present', ->
       el = compileEl()
       $scope.userForm.firstName.$setViewValue invalidName
       browserTrigger firstNameEl(el), 'blur'
       expectFormGroupHasErrorClass(el).toBe true
+      describe 'not blurred', ->
+
+  describe '$dirty && $valid && blurred', ->
+    it 'has-success is present', ->
+      el = compileEl()
+      $scope.userForm.firstName.$setViewValue validName
+      browserTrigger firstNameEl(el), 'blur'
+      expectFormGroupHasSuccessClass(el).toBe true
       describe 'not blurred', ->
 
   describe '$dirty && $invalid && not blurred', ->

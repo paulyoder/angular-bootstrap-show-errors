@@ -14,7 +14,8 @@
         }
         inputNgEl.bind('blur', function () {
           blurred = true;
-          return el.toggleClass('has-error', formCtrl[inputName].$invalid);
+          el.toggleClass('has-error', formCtrl[inputName].$invalid);
+          return el.toggleClass('has-success', formCtrl[inputName].$valid);
         });
         scope.$watch(function () {
           return formCtrl[inputName].$invalid;
@@ -22,14 +23,17 @@
           if (!blurred && invalid) {
             return;
           }
-          return el.toggleClass('has-error', invalid);
+          el.toggleClass('has-error', invalid);
+          return el.toggleClass('has-success', valid);
         });
         scope.$on('show-errors-check-validity', function () {
-          return el.toggleClass('has-error', formCtrl[inputName].$invalid);
+          el.toggleClass('has-error', formCtrl[inputName].$invalid);
+          return el.toggleClass('has-success', formCtrl[inputName].$valid);
         });
         return scope.$on('show-errors-reset', function () {
           return $timeout(function () {
             el.removeClass('has-error');
+            el.removeClass('has-success');
             return blurred = false;
           }, 0, false);
         });
