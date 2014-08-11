@@ -1,8 +1,8 @@
 {
   "name": "angular-bootstrap-show-validation",
-  "version": "1.0.0",
+  "version": "1.0.4",
   "authors": [
-    "Jouke Visser <jouke@joukevisser.com"
+    "Jouke Visser <jouke@joukevisser.com>"
   ],
   "description": "An Angular directive for Bootstrap to intelligently show form validation errors but also success",
   "main": "src/showErrors.js",
