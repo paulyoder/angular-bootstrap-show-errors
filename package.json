@@ -1,6 +1,6 @@
 {
   "name": "angular-bootstrap-show-validation",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "An Angular Directive to intelligently show form validation results",
   "author": "https://github.com/jouke/angular-bootstrap-show-validation/graphs/contributors",
   "license": "MIT",

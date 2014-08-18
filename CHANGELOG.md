@@ -1,3 +1,7 @@
+### 1.0.5
+
+* Fixed some bugs
+
 ### 1.0.0
 
 * First version

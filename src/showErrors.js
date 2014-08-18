@@ -23,7 +23,14 @@
           if (!blurred && invalid) {
             return;
           }
-          el.toggleClass('has-error', invalid);
+          return el.toggleClass('has-error', invalid);
+        });
+        scope.$watch(function () {
+          return formCtrl[inputName].$valid;
+        }, function (valid) {
+          if (!blurred && valid) {
+            return;
+          }
           return el.toggleClass('has-success', valid);
         });
         scope.$on('show-errors-check-validity', function () {
