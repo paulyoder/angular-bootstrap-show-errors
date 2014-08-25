@@ -1,5 +1,5 @@
 angular.module('ui.bootstrap.showErrors', [])
-  .directive 'showErrors', ($timeout) ->
+  .directive 'showErrors', ['$timeout', ($timeout) ->
 
     linkFn = (scope, el, attrs, formCtrl) ->
       blurred = false
@@ -37,3 +37,4 @@ angular.module('ui.bootstrap.showErrors', [])
           throw "show-errors element does not have the 'form-group' class"
         linkFn
     }
+]

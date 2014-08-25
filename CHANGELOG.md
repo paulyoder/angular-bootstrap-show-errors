@@ -1,3 +1,8 @@
+### 1.0.4
+
+* Bug Fixes
+  * Using inline array notation to allow the js file to be minified
+
 ### 1.0.3
 
 * Bug Fixes
