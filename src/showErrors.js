@@ -17,7 +17,7 @@
           return el.toggleClass('has-error', formCtrl[inputName].$invalid);
         });
         scope.$watch(function () {
-          return formCtrl[inputName].$invalid;
+          return formCtrl[inputName] && formCtrl[inputName].$invalid;
         }, function (invalid) {
           if (!blurred && invalid) {
             return;
