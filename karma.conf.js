@@ -9,7 +9,7 @@ module.exports = function(config) {
 
 
     // frameworks to use
-    frameworks: ['jasmine', 'ng-scenario'],
+    frameworks: ['jasmine'],
 
 
     // list of files / patterns to load in the browser

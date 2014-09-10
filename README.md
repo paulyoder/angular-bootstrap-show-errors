@@ -77,3 +77,18 @@ $scope.reset = function() {
 }
 ```
     
+## Development
+
+### Install Development Dependencies
+Before you begin development, you will need to install the required node modules and bower components. To do
+so, open a terminal window in the project directory and run the following commands.
+```
+npm install
+bower install
+```
+
+### Compile and Run the Unit Tests
+Run the following command from a terminal window to automatically compile and run the unit tests whenever you save changes to the source files.
+```
+grunt karma:unit:start watch
+```

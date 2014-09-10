@@ -1,6 +1,6 @@
 (function() {
   describe('showErrors', function() {
-    var $compile, $scope, $timeout, compileEl, expectFormGroupHasErrorClass, find, firstNameEl, firstNameGroup, invalidName, validName;
+    var $compile, $scope, $timeout, compileEl, expectFormGroupHasErrorClass, find, firstNameEl, invalidName, validName;
     $compile = void 0;
     $scope = void 0;
     $timeout = void 0;
@@ -22,6 +22,7 @@
             <input type="text" name="lastName" ng-model="lastName" ng-minlength="3" />\
           </div>\
         </form>')($scope);
+      angular.element(document.body).append(el);
       $scope.$digest();
       return el;
     };
@@ -31,11 +32,10 @@
     firstNameEl = function(el) {
       return find(el, '[name=firstName]');
     };
-    firstNameGroup = function(el) {
-      return angular.element(find(el, '#first-name-group'));
-    };
     expectFormGroupHasErrorClass = function(el) {
-      return expect(firstNameGroup(el).hasClass('has-error'));
+      var formGroup;
+      formGroup = el[0].querySelector('[id=first-name-group]');
+      return expect(angular.element(formGroup).hasClass('has-error'));
     };
     describe('directive does not contain an input element with a name attribute', function() {
       return it('throws an exception', function() {
@@ -66,9 +66,9 @@
         var el;
         el = compileEl();
         $scope.userForm.firstName.$setViewValue(invalidName);
-        browserTrigger(firstNameEl(el), 'blur');
-        expectFormGroupHasErrorClass(el).toBe(true);
-        return describe('not blurred', function() {});
+        angular.element(firstNameEl(el)).triggerHandler('blur');
+        $scope.$digest();
+        return expectFormGroupHasErrorClass(el).toBe(true);
       });
     });
     describe('$dirty && $invalid && not blurred', function() {
@@ -76,7 +76,7 @@
         var el;
         el = compileEl();
         $scope.userForm.firstName.$setViewValue(invalidName);
-        browserTrigger(firstNameEl(el), 'keydown');
+        angular.element(firstNameEl(el)).triggerHandler('keydown');
         return expectFormGroupHasErrorClass(el).toBe(false);
       });
     });
@@ -85,7 +85,7 @@
         var el;
         el = compileEl();
         $scope.userForm.firstName.$setViewValue(validName);
-        browserTrigger(firstNameEl(el), 'blur');
+        angular.element(firstNameEl(el)).triggerHandler('blur');
         return expectFormGroupHasErrorClass(el).toBe(false);
       });
     });
@@ -94,7 +94,7 @@
         var el;
         el = compileEl();
         $scope.userForm.firstName.$setViewValue(validName);
-        browserTrigger(firstNameEl(el), 'blur');
+        angular.element(firstNameEl(el)).triggerHandler('blur');
         $scope.$apply(function() {
           return $scope.userForm.firstName.$setViewValue(invalidName);
         });
@@ -106,7 +106,7 @@
         var el;
         el = compileEl();
         $scope.userForm.firstName.$setViewValue(validName);
-        browserTrigger(firstNameEl(el), 'blur');
+        angular.element(firstNameEl(el)).triggerHandler('blur');
         $scope.$apply(function() {
           return $scope.userForm.firstName.$setViewValue(invalidName);
         });
@@ -121,9 +121,9 @@
         var el;
         el = compileEl();
         $scope.userForm.firstName.$setViewValue(validName);
-        browserTrigger(firstNameEl(el), 'blur');
+        angular.element(firstNameEl(el)).triggerHandler('blur');
         $scope.userForm.firstName.$setViewValue(invalidName);
-        browserTrigger(firstNameEl(el), 'blur');
+        angular.element(firstNameEl(el)).triggerHandler('blur');
         return expectFormGroupHasErrorClass(el).toBe(true);
       });
     });
@@ -132,11 +132,11 @@
         var el;
         el = compileEl();
         $scope.userForm.firstName.$setViewValue(validName);
-        browserTrigger(firstNameEl(el), 'blur');
+        angular.element(firstNameEl(el)).triggerHandler('blur');
         $scope.userForm.firstName.$setViewValue(invalidName);
-        browserTrigger(firstNameEl(el), 'blur');
+        angular.element(firstNameEl(el)).triggerHandler('blur');
         $scope.userForm.firstName.$setViewValue(validName);
-        browserTrigger(firstNameEl(el), 'blur');
+        angular.element(firstNameEl(el)).triggerHandler('blur');
         return expectFormGroupHasErrorClass(el).toBe(false);
       });
     });
@@ -146,7 +146,7 @@
         el = compileEl();
         $scope.userForm.firstName.$setViewValue(validName);
         $scope.userForm.lastName.$setViewValue(invalidName);
-        browserTrigger(firstNameEl(el), 'blur');
+        angular.element(firstNameEl(el)).triggerHandler('blur');
         return expectFormGroupHasErrorClass(el).toBe(false);
       });
     });
@@ -166,7 +166,7 @@
         $scope.userForm.firstName.$setViewValue(invalidName);
         $scope.$broadcast('show-errors-check-validity');
         $scope.userForm.firstName.$setViewValue(validName);
-        browserTrigger(firstNameEl(el), 'blur');
+        angular.element(firstNameEl(el)).triggerHandler('blur');
         $scope.userForm.firstName.$setViewValue(invalidName);
         $scope.$apply(function() {
           return $scope.showErrorsCheckValidity = true;
@@ -179,7 +179,7 @@
         var el;
         el = compileEl();
         $scope.userForm.firstName.$setViewValue(invalidName);
-        browserTrigger(firstNameEl(el), 'blur');
+        angular.element(firstNameEl(el)).triggerHandler('blur');
         $scope.$broadcast('show-errors-reset');
         $timeout.flush();
         return expectFormGroupHasErrorClass(el).toBe(false);
@@ -190,7 +190,7 @@
         var el;
         el = compileEl();
         $scope.userForm.firstName.$setViewValue(validName);
-        browserTrigger(firstNameEl(el), 'blur');
+        angular.element(firstNameEl(el)).triggerHandler('blur');
         $scope.$broadcast('show-errors-reset');
         $timeout.flush();
         $scope.$apply(function() {
@@ -204,10 +204,10 @@
         var el;
         el = compileEl();
         $scope.userForm.firstName.$setViewValue(invalidName);
-        browserTrigger(firstNameEl(el), 'blur');
+        angular.element(firstNameEl(el)).triggerHandler('blur');
         $scope.$broadcast('show-errors-reset');
         $timeout.flush();
-        browserTrigger(firstNameEl(el), 'blur');
+        angular.element(firstNameEl(el)).triggerHandler('blur');
         $scope.$broadcast('show-errors-reset');
         $timeout.flush();
         return expectFormGroupHasErrorClass(el).toBe(false);
