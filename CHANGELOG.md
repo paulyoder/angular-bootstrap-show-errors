@@ -1,3 +1,11 @@
+### 1.1.0
+
+* Enhancements
+  * Added `showSuccess` option
+
+* Bug Fixes
+  * Does not throw an undefined error when the form is dynamically created. Thanks @murphyalexandre
+
 ### 1.0.4
 
 * Bug Fixes

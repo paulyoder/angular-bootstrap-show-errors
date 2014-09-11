@@ -18,7 +18,7 @@ describe 'showErrors', ->
           <div id="first-name-group" class="form-group" show-errors>
             <input type="text" name="firstName" ng-model="firstName" ng-minlength="3" />
           </div>
-          <div class="form-group" show-errors>
+          <div id="last-name-group" class="form-group" show-errors="{ showSuccess: true }">
             <input type="text" name="lastName" ng-model="lastName" ng-minlength="3" />
           </div>
         </form>'
@@ -26,16 +26,6 @@ describe 'showErrors', ->
     angular.element(document.body).append el
     $scope.$digest()
     el
-
-  find = (el, selector) ->
-    el[0].querySelector selector
-
-  firstNameEl = (el) ->
-    find el, '[name=firstName]'
-
-  expectFormGroupHasErrorClass = (el) ->
-    formGroup = el[0].querySelector '[id=first-name-group]'
-    expect angular.element(formGroup).hasClass('has-error')
 
   describe 'directive does not contain an input element with a name attribute', ->
     it 'throws an exception', ->
@@ -63,7 +53,6 @@ describe 'showErrors', ->
       el = compileEl()
       $scope.userForm.firstName.$setViewValue invalidName
       angular.element(firstNameEl(el)).triggerHandler 'blur'
-      $scope.$digest()
       expectFormGroupHasErrorClass(el).toBe true
 
   describe '$dirty && $invalid && not blurred', ->
@@ -178,3 +167,127 @@ describe 'showErrors', ->
       $scope.$broadcast 'show-errors-reset'
       $timeout.flush()
       expectFormGroupHasErrorClass(el).toBe false
+
+  describe '{showSuccess: true} option', ->
+    describe '$pristine && $valid', ->
+      it 'has-success is absent', ->
+        el = compileEl()
+        expectLastNameFormGroupHasSuccessClass(el).toBe false
+
+    describe '$dirty && $valid && blurred', ->
+      it 'has-success is present', ->
+        el = compileEl()
+        $scope.userForm.lastName.$setViewValue validName
+        angular.element(lastNameEl(el)).triggerHandler 'blur'
+        $scope.$digest()
+        expectLastNameFormGroupHasSuccessClass(el).toBe true
+
+    describe '$dirty && $invalid && blurred', ->
+      it 'has-success is present', ->
+        el = compileEl()
+        $scope.userForm.lastName.$setViewValue invalidName
+        angular.element(lastNameEl(el)).triggerHandler 'blur'
+        $scope.$digest()
+        expectLastNameFormGroupHasSuccessClass(el).toBe false
+
+    describe '$invalid && blurred then becomes $valid before blurred', ->
+      it 'has-success is present', ->
+        el = compileEl()
+        $scope.userForm.lastName.$setViewValue invalidName
+        angular.element(lastNameEl(el)).triggerHandler 'blur'
+        $scope.$apply ->
+          $scope.userForm.lastName.$setViewValue invalidName
+        $scope.$apply ->
+          $scope.userForm.lastName.$setViewValue validName
+        expectLastNameFormGroupHasSuccessClass(el).toBe true
+
+    describe '$valid && showErrorsCheckValidity is set before blurred', ->
+      it 'has-success is present', ->
+        el = compileEl()
+        $scope.userForm.lastName.$setViewValue validName
+        $scope.$broadcast 'show-errors-check-validity'
+        expectLastNameFormGroupHasSuccessClass(el).toBe true
+
+    describe 'showErrorsReset', ->
+      it 'removes has-success', ->
+        el = compileEl()
+        $scope.userForm.lastName.$setViewValue validName
+        angular.element(lastNameEl(el)).triggerHandler 'blur'
+        $scope.$broadcast 'show-errors-reset'
+        $timeout.flush()
+        expectLastNameFormGroupHasSuccessClass(el).toBe false
+
+describe 'showErrorsConfig', ->
+  $compile = undefined
+  $scope = undefined
+  $timeout = undefined
+  validName = 'Paul'
+  invalidName = 'Pa'
+
+  beforeEach ->
+    testModule = angular.module 'testModule', []
+    testModule.config (showErrorsConfigProvider) ->
+      showErrorsConfigProvider.showSuccess true
+
+    module 'ui.bootstrap.showErrors', 'testModule'
+
+    inject((_$compile_, _$rootScope_, _$timeout_) ->
+      $compile = _$compile_
+      $scope = _$rootScope_
+      $timeout = _$timeout_
+    )
+
+  compileEl = ->
+    el = $compile(
+        '<form name="userForm">
+          <div id="first-name-group" class="form-group" show-errors="{showSuccess: false}">
+            <input type="text" name="firstName" ng-model="firstName" ng-minlength="3" />
+          </div>
+          <div id="last-name-group" class="form-group" show-errors>
+            <input type="text" name="lastName" ng-model="lastName" ng-minlength="3" />
+          </div>
+        </form>'
+      )($scope)
+    angular.element(document.body).append el
+    $scope.$digest()
+    el
+
+  describe 'when showErrorsConfig.showSuccess is true', ->
+    describe 'and no options given', ->
+      it 'show-success class is applied', ->
+        el = compileEl()
+        $scope.userForm.lastName.$setViewValue validName
+        angular.element(lastNameEl(el)).triggerHandler 'blur'
+        $scope.$digest()
+        expectLastNameFormGroupHasSuccessClass(el).toBe true
+
+  describe 'when showErrorsConfig.showSuccess is true', ->
+    describe 'but options.showSuccess is false', ->
+      it 'show-success class is not applied', ->
+        el = compileEl()
+        $scope.userForm.firstName.$setViewValue validName
+        angular.element(firstNameEl(el)).triggerHandler 'blur'
+        $scope.$digest()
+        expectFirstNameFormGroupHasSuccessClass(el).toBe false
+
+find = (el, selector) ->
+  el[0].querySelector selector
+
+firstNameEl = (el) ->
+  find el, '[name=firstName]'
+
+lastNameEl = (el) ->
+  find el, '[name=lastName]'
+
+expectFormGroupHasErrorClass = (el) ->
+  formGroup = el[0].querySelector '[id=first-name-group]'
+  expect angular.element(formGroup).hasClass('has-error')
+
+expectFirstNameFormGroupHasSuccessClass = (el) ->
+  formGroup = el[0].querySelector '[id=first-name-group]'
+  expect angular.element(formGroup).hasClass('has-success')
+
+expectLastNameFormGroupHasSuccessClass = (el) ->
+  formGroup = el[0].querySelector '[id=last-name-group]'
+  expect angular.element(formGroup).hasClass('has-success')
+

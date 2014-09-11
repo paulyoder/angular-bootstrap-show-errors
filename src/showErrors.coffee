@@ -1,8 +1,19 @@
-angular.module('ui.bootstrap.showErrors', [])
-  .directive 'showErrors', ['$timeout', ($timeout) ->
+showErrorsModule = angular.module('ui.bootstrap.showErrors', [])
+
+showErrorsModule.directive 'showErrors',
+['$timeout', 'showErrorsConfig', ($timeout, showErrorsConfig) ->
+
+    getShowSuccess = (options) ->
+      showSuccess = showErrorsConfig.showSuccess
+      if options && options.showSuccess?
+        showSuccess = options.showSuccess
+      showSuccess
 
     linkFn = (scope, el, attrs, formCtrl) ->
       blurred = false
+      options = scope.$eval attrs.showErrors
+      showSuccess = getShowSuccess options
+
       inputEl   = el[0].querySelector("[name]")
       inputNgEl = angular.element(inputEl)
       inputName = inputNgEl.attr('name')
@@ -11,23 +22,29 @@ angular.module('ui.bootstrap.showErrors', [])
 
       inputNgEl.bind 'blur', ->
         blurred = true
-        el.toggleClass 'has-error', formCtrl[inputName].$invalid
+        toggleClasses formCtrl[inputName].$invalid
 
       scope.$watch ->
         formCtrl[inputName] && formCtrl[inputName].$invalid
       , (invalid) ->
-        return if !blurred && invalid
-        el.toggleClass 'has-error', invalid
+        return if !blurred
+        toggleClasses invalid
 
       scope.$on 'show-errors-check-validity', ->
-        el.toggleClass 'has-error', formCtrl[inputName].$invalid
+        toggleClasses formCtrl[inputName].$invalid
 
       scope.$on 'show-errors-reset', ->
         $timeout ->
           # want to run this after the current digest cycle
           el.removeClass 'has-error'
+          el.removeClass 'has-success'
           blurred = false
         , 0, false
+
+      toggleClasses = (invalid) ->
+        el.toggleClass 'has-error', invalid
+        if showSuccess
+          el.toggleClass 'has-success', !invalid
 
     {
       restrict: 'A'
@@ -38,3 +55,14 @@ angular.module('ui.bootstrap.showErrors', [])
         linkFn
     }
 ]
+
+showErrorsModule.provider 'showErrorsConfig', ->
+  _showSuccess = false
+
+  @showSuccess = (showSuccess) ->
+    _showSuccess = showSuccess
+
+  @$get = ->
+    showSuccess: _showSuccess
+
+  return

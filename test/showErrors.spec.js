@@ -1,6 +1,8 @@
 (function() {
+  var expectFirstNameFormGroupHasSuccessClass, expectFormGroupHasErrorClass, expectLastNameFormGroupHasSuccessClass, find, firstNameEl, lastNameEl;
+
   describe('showErrors', function() {
-    var $compile, $scope, $timeout, compileEl, expectFormGroupHasErrorClass, find, firstNameEl, invalidName, validName;
+    var $compile, $scope, $timeout, compileEl, invalidName, validName;
     $compile = void 0;
     $scope = void 0;
     $timeout = void 0;
@@ -18,24 +20,13 @@
           <div id="first-name-group" class="form-group" show-errors>\
             <input type="text" name="firstName" ng-model="firstName" ng-minlength="3" />\
           </div>\
-          <div class="form-group" show-errors>\
+          <div id="last-name-group" class="form-group" show-errors="{ showSuccess: true }">\
             <input type="text" name="lastName" ng-model="lastName" ng-minlength="3" />\
           </div>\
         </form>')($scope);
       angular.element(document.body).append(el);
       $scope.$digest();
       return el;
-    };
-    find = function(el, selector) {
-      return el[0].querySelector(selector);
-    };
-    firstNameEl = function(el) {
-      return find(el, '[name=firstName]');
-    };
-    expectFormGroupHasErrorClass = function(el) {
-      var formGroup;
-      formGroup = el[0].querySelector('[id=first-name-group]');
-      return expect(angular.element(formGroup).hasClass('has-error'));
     };
     describe('directive does not contain an input element with a name attribute', function() {
       return it('throws an exception', function() {
@@ -67,7 +58,6 @@
         el = compileEl();
         $scope.userForm.firstName.$setViewValue(invalidName);
         angular.element(firstNameEl(el)).triggerHandler('blur');
-        $scope.$digest();
         return expectFormGroupHasErrorClass(el).toBe(true);
       });
     });
@@ -199,7 +189,7 @@
         return expectFormGroupHasErrorClass(el).toBe(false);
       });
     });
-    return describe('call showErrorsReset multiple times', function() {
+    describe('call showErrorsReset multiple times', function() {
       return it('removes has-error', function() {
         var el;
         el = compileEl();
@@ -213,6 +203,160 @@
         return expectFormGroupHasErrorClass(el).toBe(false);
       });
     });
+    return describe('{showSuccess: true} option', function() {
+      describe('$pristine && $valid', function() {
+        return it('has-success is absent', function() {
+          var el;
+          el = compileEl();
+          return expectLastNameFormGroupHasSuccessClass(el).toBe(false);
+        });
+      });
+      describe('$dirty && $valid && blurred', function() {
+        return it('has-success is present', function() {
+          var el;
+          el = compileEl();
+          $scope.userForm.lastName.$setViewValue(validName);
+          angular.element(lastNameEl(el)).triggerHandler('blur');
+          $scope.$digest();
+          return expectLastNameFormGroupHasSuccessClass(el).toBe(true);
+        });
+      });
+      describe('$dirty && $invalid && blurred', function() {
+        return it('has-success is present', function() {
+          var el;
+          el = compileEl();
+          $scope.userForm.lastName.$setViewValue(invalidName);
+          angular.element(lastNameEl(el)).triggerHandler('blur');
+          $scope.$digest();
+          return expectLastNameFormGroupHasSuccessClass(el).toBe(false);
+        });
+      });
+      describe('$invalid && blurred then becomes $valid before blurred', function() {
+        return it('has-success is present', function() {
+          var el;
+          el = compileEl();
+          $scope.userForm.lastName.$setViewValue(invalidName);
+          angular.element(lastNameEl(el)).triggerHandler('blur');
+          $scope.$apply(function() {
+            return $scope.userForm.lastName.$setViewValue(invalidName);
+          });
+          $scope.$apply(function() {
+            return $scope.userForm.lastName.$setViewValue(validName);
+          });
+          return expectLastNameFormGroupHasSuccessClass(el).toBe(true);
+        });
+      });
+      describe('$valid && showErrorsCheckValidity is set before blurred', function() {
+        return it('has-success is present', function() {
+          var el;
+          el = compileEl();
+          $scope.userForm.lastName.$setViewValue(validName);
+          $scope.$broadcast('show-errors-check-validity');
+          return expectLastNameFormGroupHasSuccessClass(el).toBe(true);
+        });
+      });
+      return describe('showErrorsReset', function() {
+        return it('removes has-success', function() {
+          var el;
+          el = compileEl();
+          $scope.userForm.lastName.$setViewValue(validName);
+          angular.element(lastNameEl(el)).triggerHandler('blur');
+          $scope.$broadcast('show-errors-reset');
+          $timeout.flush();
+          return expectLastNameFormGroupHasSuccessClass(el).toBe(false);
+        });
+      });
+    });
   });
+
+  describe('showErrorsConfig', function() {
+    var $compile, $scope, $timeout, compileEl, invalidName, validName;
+    $compile = void 0;
+    $scope = void 0;
+    $timeout = void 0;
+    validName = 'Paul';
+    invalidName = 'Pa';
+    beforeEach(function() {
+      var testModule;
+      testModule = angular.module('testModule', []);
+      testModule.config(function(showErrorsConfigProvider) {
+        return showErrorsConfigProvider.showSuccess(true);
+      });
+      module('ui.bootstrap.showErrors', 'testModule');
+      return inject(function(_$compile_, _$rootScope_, _$timeout_) {
+        $compile = _$compile_;
+        $scope = _$rootScope_;
+        return $timeout = _$timeout_;
+      });
+    });
+    compileEl = function() {
+      var el;
+      el = $compile('<form name="userForm">\
+          <div id="first-name-group" class="form-group" show-errors="{showSuccess: false}">\
+            <input type="text" name="firstName" ng-model="firstName" ng-minlength="3" />\
+          </div>\
+          <div id="last-name-group" class="form-group" show-errors>\
+            <input type="text" name="lastName" ng-model="lastName" ng-minlength="3" />\
+          </div>\
+        </form>')($scope);
+      angular.element(document.body).append(el);
+      $scope.$digest();
+      return el;
+    };
+    describe('when showErrorsConfig.showSuccess is true', function() {
+      return describe('and no options given', function() {
+        return it('show-success class is applied', function() {
+          var el;
+          el = compileEl();
+          $scope.userForm.lastName.$setViewValue(validName);
+          angular.element(lastNameEl(el)).triggerHandler('blur');
+          $scope.$digest();
+          return expectLastNameFormGroupHasSuccessClass(el).toBe(true);
+        });
+      });
+    });
+    return describe('when showErrorsConfig.showSuccess is true', function() {
+      return describe('but options.showSuccess is false', function() {
+        return it('show-success class is not applied', function() {
+          var el;
+          el = compileEl();
+          $scope.userForm.firstName.$setViewValue(validName);
+          angular.element(firstNameEl(el)).triggerHandler('blur');
+          $scope.$digest();
+          return expectFirstNameFormGroupHasSuccessClass(el).toBe(false);
+        });
+      });
+    });
+  });
+
+  find = function(el, selector) {
+    return el[0].querySelector(selector);
+  };
+
+  firstNameEl = function(el) {
+    return find(el, '[name=firstName]');
+  };
+
+  lastNameEl = function(el) {
+    return find(el, '[name=lastName]');
+  };
+
+  expectFormGroupHasErrorClass = function(el) {
+    var formGroup;
+    formGroup = el[0].querySelector('[id=first-name-group]');
+    return expect(angular.element(formGroup).hasClass('has-error'));
+  };
+
+  expectFirstNameFormGroupHasSuccessClass = function(el) {
+    var formGroup;
+    formGroup = el[0].querySelector('[id=first-name-group]');
+    return expect(angular.element(formGroup).hasClass('has-success'));
+  };
+
+  expectLastNameFormGroupHasSuccessClass = function(el) {
+    var formGroup;
+    formGroup = el[0].querySelector('[id=last-name-group]');
+    return expect(angular.element(formGroup).hasClass('has-success'));
+  };
 
 }).call(this);

@@ -18,8 +18,11 @@ Copy the `src/showErrors.js` or `src/showErrors.min.js` file into your project.
 Quick Start
 ---
 1. Include the `ui.bootstrap.showErrors` module in your Angular app
-2. Add the `show-errors` attribute on the form div element that contains the `form-group` class
+```javascript
+angular.module('yourApp', ['ui.bootstrap.showErrors']);
+```
 
+2. Add the `show-errors` attribute on the div element that contains the `form-group` class
 ```html
 <form name="userForm">
   <div class="form-group" show-errors>
@@ -75,6 +78,32 @@ If you have functionality to reset your form, you can broadcast the 'show-errors
 $scope.reset = function() {
   $scope.$broadcast('show-errors-reset');
 }
+```
+
+Show Valid Entries
+---
+It's also possible to let the user know when they have entered valid values by applying the 'show-success' class that Bootstrap provides. 
+You can either apply this globally or on an element by element basis.
+
+##### Globally
+The following example shows how to show valid values on every input that uses the showErrors directive.
+
+```javascript
+app = angular.module('yourApp', ['ui.bootstrap.showErrors']);
+app.config(['showErrorsConfigProvider', function(showErrorsConfigProvider) {
+  showErrorsConfigProvider.showSuccess(true);
+});
+```
+
+##### By Input
+If you only want to show valid values on specific inputs, then you can pass in the `{ showSuccess: true }` option like the example below shows.
+
+```html
+<form name="userForm">
+  <div class="form-group" show-errors="{ showSuccess: true }">
+    <input type="text" name="firstName" ng-model="firstName" ng-required />
+  </div>
+</form>
 ```
     
 ## Development
