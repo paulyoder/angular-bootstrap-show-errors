@@ -92,7 +92,7 @@ The following example shows how to show valid values on every input that uses th
 app = angular.module('yourApp', ['ui.bootstrap.showErrors']);
 app.config(['showErrorsConfigProvider', function(showErrorsConfigProvider) {
   showErrorsConfigProvider.showSuccess(true);
-});
+}]);
 ```
 
 ##### By Input
