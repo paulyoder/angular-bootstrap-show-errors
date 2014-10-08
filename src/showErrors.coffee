@@ -14,7 +14,7 @@ showErrorsModule.directive 'showErrors',
       options = scope.$eval attrs.showErrors
       showSuccess = getShowSuccess options
 
-      inputEl   = el[0].querySelector("[name]")
+      inputEl   = el[0].querySelector(".form-control[name]")
       inputNgEl = angular.element(inputEl)
       inputName = inputNgEl.attr('name')
       unless inputName
