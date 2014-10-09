@@ -228,6 +228,7 @@ describe 'showErrorsConfig', ->
     testModule = angular.module 'testModule', []
     testModule.config (showErrorsConfigProvider) ->
       showErrorsConfigProvider.showSuccess true
+      showErrorsConfigProvider.trigger 'keypress'
 
     module 'ui.bootstrap.showErrors', 'testModule'
 
@@ -240,7 +241,7 @@ describe 'showErrorsConfig', ->
   compileEl = ->
     el = $compile(
         '<form name="userForm">
-          <div id="first-name-group" class="form-group" show-errors="{showSuccess: false}">
+          <div id="first-name-group" class="form-group" show-errors="{showSuccess: false, trigger: \'blur\'}">
             <input type="text" name="firstName" ng-model="firstName" ng-minlength="3" class="form-control" />
           </div>
           <div id="last-name-group" class="form-group" show-errors>
@@ -257,7 +258,7 @@ describe 'showErrorsConfig', ->
       it 'show-success class is applied', ->
         el = compileEl()
         $scope.userForm.lastName.$setViewValue validName
-        angular.element(lastNameEl(el)).triggerHandler 'blur'
+        angular.element(lastNameEl(el)).triggerHandler 'keypress'
         $scope.$digest()
         expectLastNameFormGroupHasSuccessClass(el).toBe true
 
@@ -269,6 +270,23 @@ describe 'showErrorsConfig', ->
         angular.element(firstNameEl(el)).triggerHandler 'blur'
         $scope.$digest()
         expectFirstNameFormGroupHasSuccessClass(el).toBe false
+
+  describe 'when showErrorsConfig.trigger is "keypress"', ->
+    describe 'and no options given', ->
+      it 'validates the value on the first keypress', ->
+        el = compileEl()
+        $scope.userForm.lastName.$setViewValue invalidName
+        angular.element(lastNameEl(el)).triggerHandler 'keypress'
+        $scope.$digest()
+        expectLastNameFormGroupHasErrorClass(el).toBe true
+
+    describe 'but options.trigger is "blur"', ->
+      it 'does not validate the value on keypress', ->
+        el = compileEl()
+        $scope.userForm.firstName.$setViewValue invalidName
+        angular.element(firstNameEl(el)).triggerHandler 'keypress'
+        $scope.$digest()
+        expectFirstNameFormGroupHasErrorClass(el).toBe false
 
 find = (el, selector) ->
   el[0].querySelector selector
@@ -290,3 +308,11 @@ expectFirstNameFormGroupHasSuccessClass = (el) ->
 expectLastNameFormGroupHasSuccessClass = (el) ->
   formGroup = el[0].querySelector '[id=last-name-group]'
   expect angular.element(formGroup).hasClass('has-success')
+
+expectFirstNameFormGroupHasErrorClass = (el) ->
+  formGroup = el[0].querySelector '[id=first-name-group]'
+  expect angular.element(formGroup).hasClass('has-error')
+
+expectLastNameFormGroupHasErrorClass = (el) ->
+  formGroup = el[0].querySelector '[id=last-name-group]'
+  expect angular.element(formGroup).hasClass('has-error')

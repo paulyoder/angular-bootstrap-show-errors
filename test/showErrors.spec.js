@@ -1,5 +1,5 @@
 (function() {
-  var expectFirstNameFormGroupHasSuccessClass, expectFormGroupHasErrorClass, expectLastNameFormGroupHasSuccessClass, find, firstNameEl, lastNameEl;
+  var expectFirstNameFormGroupHasErrorClass, expectFirstNameFormGroupHasSuccessClass, expectFormGroupHasErrorClass, expectLastNameFormGroupHasErrorClass, expectLastNameFormGroupHasSuccessClass, find, firstNameEl, lastNameEl;
 
   describe('showErrors', function() {
     var $compile, $scope, $timeout, compileEl, invalidName, validName;
@@ -280,7 +280,8 @@
       var testModule;
       testModule = angular.module('testModule', []);
       testModule.config(function(showErrorsConfigProvider) {
-        return showErrorsConfigProvider.showSuccess(true);
+        showErrorsConfigProvider.showSuccess(true);
+        return showErrorsConfigProvider.trigger('keypress');
       });
       module('ui.bootstrap.showErrors', 'testModule');
       return inject(function(_$compile_, _$rootScope_, _$timeout_) {
@@ -292,7 +293,7 @@
     compileEl = function() {
       var el;
       el = $compile('<form name="userForm">\
-          <div id="first-name-group" class="form-group" show-errors="{showSuccess: false}">\
+          <div id="first-name-group" class="form-group" show-errors="{showSuccess: false, trigger: \'blur\'}">\
             <input type="text" name="firstName" ng-model="firstName" ng-minlength="3" class="form-control" />\
           </div>\
           <div id="last-name-group" class="form-group" show-errors>\
@@ -309,13 +310,13 @@
           var el;
           el = compileEl();
           $scope.userForm.lastName.$setViewValue(validName);
-          angular.element(lastNameEl(el)).triggerHandler('blur');
+          angular.element(lastNameEl(el)).triggerHandler('keypress');
           $scope.$digest();
           return expectLastNameFormGroupHasSuccessClass(el).toBe(true);
         });
       });
     });
-    return describe('when showErrorsConfig.showSuccess is true', function() {
+    describe('when showErrorsConfig.showSuccess is true', function() {
       return describe('but options.showSuccess is false', function() {
         return it('show-success class is not applied', function() {
           var el;
@@ -324,6 +325,28 @@
           angular.element(firstNameEl(el)).triggerHandler('blur');
           $scope.$digest();
           return expectFirstNameFormGroupHasSuccessClass(el).toBe(false);
+        });
+      });
+    });
+    return describe('when showErrorsConfig.trigger is "keypress"', function() {
+      describe('and no options given', function() {
+        return it('validates the value on the first keypress', function() {
+          var el;
+          el = compileEl();
+          $scope.userForm.lastName.$setViewValue(invalidName);
+          angular.element(lastNameEl(el)).triggerHandler('keypress');
+          $scope.$digest();
+          return expectLastNameFormGroupHasErrorClass(el).toBe(true);
+        });
+      });
+      return describe('but options.trigger is "blur"', function() {
+        return it('does not validate the value on keypress', function() {
+          var el;
+          el = compileEl();
+          $scope.userForm.firstName.$setViewValue(invalidName);
+          angular.element(firstNameEl(el)).triggerHandler('keypress');
+          $scope.$digest();
+          return expectFirstNameFormGroupHasErrorClass(el).toBe(false);
         });
       });
     });
@@ -357,6 +380,18 @@
     var formGroup;
     formGroup = el[0].querySelector('[id=last-name-group]');
     return expect(angular.element(formGroup).hasClass('has-success'));
+  };
+
+  expectFirstNameFormGroupHasErrorClass = function(el) {
+    var formGroup;
+    formGroup = el[0].querySelector('[id=first-name-group]');
+    return expect(angular.element(formGroup).hasClass('has-error'));
+  };
+
+  expectLastNameFormGroupHasErrorClass = function(el) {
+    var formGroup;
+    formGroup = el[0].querySelector('[id=last-name-group]');
+    return expect(angular.element(formGroup).hasClass('has-error'));
   };
 
 }).call(this);

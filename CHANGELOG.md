@@ -3,6 +3,9 @@
 * Breaking Changes
   * Added a more specific selector query for the input element. The input element must now also have the 'form-control' class associated with it. Thanks @martindederer
 
+* Enhancements
+  * Added `trigger` option to provide a custom trigger to validate the value. By default the trigger is the `blur` event. Thanks @TEmplarian
+
 ### 1.1.0
 
 * Enhancements

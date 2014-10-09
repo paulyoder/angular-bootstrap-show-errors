@@ -95,7 +95,7 @@ app.config(['showErrorsConfigProvider', function(showErrorsConfigProvider) {
 }]);
 ```
 
-##### By Input
+##### By Input Element
 If you only want to show valid values on specific inputs, then you can pass in the `{ showSuccess: true }` option like the example below shows.
 
 ```html
@@ -104,6 +104,29 @@ If you only want to show valid values on specific inputs, then you can pass in t
     <input type="text" name="firstName" ng-model="firstName" ng-required />
   </div>
 </form>
+```
+
+Custom Trigger
+---
+By default, the validation is not performed until the `blur` event is trigger on the input 
+element. However, there are some scenarios where this is not desirable, so it's possible to 
+override this with the `trigger` option.
+
+##### By Input Element
+```html
+<form name="userForm">
+  <div class="form-group" show-errors="{ trigger: 'keypress' }">
+    <input ng-model="firstName" ng-pattern="/^foo$/" ng-required name="firstName" class="form-control" type="text" />
+  </div>
+</form>
+```
+
+##### Globally
+```javascript
+app = angular.module('yourApp', ['ui.bootstrap.showErrors']);
+app.config(['showErrorsConfigProvider', function(showErrorsConfigProvider) {
+  showErrorsConfigProvider.trigger('keypress');
+}]);
 ```
     
 ## Development
