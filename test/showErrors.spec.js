@@ -18,21 +18,21 @@
       var el;
       el = $compile('<form name="userForm">\
           <div id="first-name-group" class="form-group" show-errors>\
-            <input type="text" name="firstName" ng-model="firstName" ng-minlength="3" />\
+            <input type="text" name="firstName" ng-model="firstName" ng-minlength="3" class="form-control" />\
           </div>\
           <div id="last-name-group" class="form-group" show-errors="{ showSuccess: true }">\
-            <input type="text" name="lastName" ng-model="lastName" ng-minlength="3" />\
+            <input type="text" name="lastName" ng-model="lastName" ng-minlength="3" class="form-control" />\
           </div>\
         </form>')($scope);
       angular.element(document.body).append(el);
       $scope.$digest();
       return el;
     };
-    describe('directive does not contain an input element with a name attribute', function() {
+    describe('directive does not contain an input element with a form-control class and name attribute', function() {
       return it('throws an exception', function() {
         return expect(function() {
-          return $compile('<form name="userForm"><div class="form-group" show-errors><input type="text"></input></div></form>')($scope);
-        }).toThrow("show-errors element has no child input elements with a 'name' attribute");
+          return $compile('<form name="userForm"><div class="form-group" show-errors><input type="text" name="firstName"></input></div></form>')($scope);
+        }).toThrow("show-errors element has no child input elements with a 'name' attribute and a 'form-control' class");
       });
     });
     it("throws an exception if the element doesn't have the form-group class", function() {
@@ -293,10 +293,10 @@
       var el;
       el = $compile('<form name="userForm">\
           <div id="first-name-group" class="form-group" show-errors="{showSuccess: false}">\
-            <input type="text" name="firstName" ng-model="firstName" ng-minlength="3" />\
+            <input type="text" name="firstName" ng-model="firstName" ng-minlength="3" class="form-control" />\
           </div>\
           <div id="last-name-group" class="form-group" show-errors>\
-            <input type="text" name="lastName" ng-model="lastName" ng-minlength="3" />\
+            <input type="text" name="lastName" ng-model="lastName" ng-minlength="3" class="form-control" />\
           </div>\
         </form>')($scope);
       angular.element(document.body).append(el);

@@ -16,10 +16,10 @@ describe 'showErrors', ->
     el = $compile(
         '<form name="userForm">
           <div id="first-name-group" class="form-group" show-errors>
-            <input type="text" name="firstName" ng-model="firstName" ng-minlength="3" />
+            <input type="text" name="firstName" ng-model="firstName" ng-minlength="3" class="form-control" />
           </div>
           <div id="last-name-group" class="form-group" show-errors="{ showSuccess: true }">
-            <input type="text" name="lastName" ng-model="lastName" ng-minlength="3" />
+            <input type="text" name="lastName" ng-model="lastName" ng-minlength="3" class="form-control" />
           </div>
         </form>'
       )($scope)
@@ -27,11 +27,11 @@ describe 'showErrors', ->
     $scope.$digest()
     el
 
-  describe 'directive does not contain an input element with a name attribute', ->
+  describe 'directive does not contain an input element with a form-control class and name attribute', ->
     it 'throws an exception', ->
       expect( ->
-        $compile('<form name="userForm"><div class="form-group" show-errors><input type="text"></input></div></form>')($scope)
-      ).toThrow "show-errors element has no child input elements with a 'name' attribute"
+        $compile('<form name="userForm"><div class="form-group" show-errors><input type="text" name="firstName"></input></div></form>')($scope)
+      ).toThrow "show-errors element has no child input elements with a 'name' attribute and a 'form-control' class"
 
   it "throws an exception if the element doesn't have the form-group class", ->
     expect( ->
@@ -241,10 +241,10 @@ describe 'showErrorsConfig', ->
     el = $compile(
         '<form name="userForm">
           <div id="first-name-group" class="form-group" show-errors="{showSuccess: false}">
-            <input type="text" name="firstName" ng-model="firstName" ng-minlength="3" />
+            <input type="text" name="firstName" ng-model="firstName" ng-minlength="3" class="form-control" />
           </div>
           <div id="last-name-group" class="form-group" show-errors>
-            <input type="text" name="lastName" ng-model="lastName" ng-minlength="3" />
+            <input type="text" name="lastName" ng-model="lastName" ng-minlength="3" class="form-control" />
           </div>
         </form>'
       )($scope)
@@ -290,4 +290,3 @@ expectFirstNameFormGroupHasSuccessClass = (el) ->
 expectLastNameFormGroupHasSuccessClass = (el) ->
   formGroup = el[0].querySelector '[id=last-name-group]'
   expect angular.element(formGroup).hasClass('has-success')
-

@@ -14,11 +14,11 @@ showErrorsModule.directive 'showErrors',
       options = scope.$eval attrs.showErrors
       showSuccess = getShowSuccess options
 
-      inputEl   = el[0].querySelector(".form-control[name]")
-      inputNgEl = angular.element(inputEl)
-      inputName = inputNgEl.attr('name')
+      inputEl   = el[0].querySelector '.form-control[name]'
+      inputNgEl = angular.element inputEl
+      inputName = inputNgEl.attr 'name'
       unless inputName
-        throw "show-errors element has no child input elements with a 'name' attribute"
+        throw "show-errors element has no child input elements with a 'name' attribute and a 'form-control' class"
 
       inputNgEl.bind 'blur', ->
         blurred = true

@@ -1,3 +1,8 @@
+### 2.0.0
+
+* Breaking Changes
+  * Added a more specific selector query for the input element. The input element must now also have the 'form-control' class associated with it. Thanks @martindederer
+
 ### 1.1.0
 
 * Enhancements
