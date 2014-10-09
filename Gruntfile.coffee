@@ -9,15 +9,6 @@ module.exports = (grunt) ->
           'src/showErrors.js': 'src/showErrors.coffee'
           'test/showErrors.spec.js': 'test/showErrors.spec.coffee'
           'test/helpers.js': 'test/helpers.coffee'
-    ngmin:
-      directives:
-        expand: true
-        files: [{
-          expand: true
-          cwd: 'src'
-          src: 'showErrors.js'
-          dest: 'src'
-        }]
     pkg: grunt.file.readJSON('package.json')
     uglify:
       options:
@@ -37,13 +28,11 @@ module.exports = (grunt) ->
     karma:
       unit:
         configFile: 'karma.conf.js'
-        background: true
+        singleRun: true
       continuous:
         configFile: 'karma.conf.js'
-        singleRun: true
-        browsers: ['PhantomJS']
-
+        background: true
 
   require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks)
 
-  grunt.registerTask 'default', ['coffee', 'ngmin', 'uglify']
+  grunt.registerTask 'default', ['coffee', 'uglify', 'karma:unit']

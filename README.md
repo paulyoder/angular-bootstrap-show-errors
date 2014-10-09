@@ -117,7 +117,10 @@ bower install
 ```
 
 ### Compile and Run the Unit Tests
-Run the following command from a terminal window to automatically compile and run the unit tests whenever you save changes to the source files.
+Just type `grunt` in the command line to compile and run the karma unit tests once.
+
+If you want to have grunt watch for any file changes and automatically compile and run the karma 
+unit tests, then run the following command:
 ```
-grunt karma:unit:start watch
+grunt karma:continuous:start watch
 ```
