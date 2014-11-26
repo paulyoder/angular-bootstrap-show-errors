@@ -1,6 +1,6 @@
 {
   "name": "angular-bootstrap-show-errors",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "An Angular Directive to intelligently show form validation errors",
   "author": "https://github.com/paulyoder/angular-bootstrap-show-errors/graphs/contributors",
   "license": "MIT",

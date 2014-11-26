@@ -1,10 +1,15 @@
+### 2.1.0
+
+* Enhancements
+  * Using `$interpolate` to retrieve the name of the input element. This allows the directive to work with interpolated form names. Thanks @cherrydev and @Templarian
+
 ### 2.0.0
 
 * Breaking Changes
   * Added a more specific selector query for the input element. The input element must now also have the 'form-control' class associated with it. Thanks @martindederer
 
 * Enhancements
-  * Added `trigger` option to provide a custom trigger to validate the value. By default the trigger is the `blur` event. Thanks @TEmplarian
+  * Added `trigger` option to provide a custom trigger to validate the value. By default the trigger is the `blur` event. Thanks @Templarian
 
 ### 1.1.0
 
