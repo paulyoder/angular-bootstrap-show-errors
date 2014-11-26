@@ -4,7 +4,7 @@
   showErrorsModule = angular.module('ui.bootstrap.showErrors', []);
 
   showErrorsModule.directive('showErrors', [
-    '$timeout', 'showErrorsConfig', function($timeout, showErrorsConfig) {
+    '$timeout', 'showErrorsConfig', '$interpolate', function($timeout, showErrorsConfig, $interpolate) {
       var getShowSuccess, getTrigger, linkFn;
       getTrigger = function(options) {
         var trigger;
@@ -30,7 +30,7 @@
         trigger = getTrigger(options);
         inputEl = el[0].querySelector('.form-control[name]');
         inputNgEl = angular.element(inputEl);
-        inputName = inputNgEl.attr('name');
+        inputName = $interpolate(inputNgEl.attr('name') || '')(scope);
         if (!inputName) {
           throw "show-errors element has no child input elements with a 'name' attribute and a 'form-control' class";
         }
