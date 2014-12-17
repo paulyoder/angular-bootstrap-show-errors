@@ -21,24 +21,26 @@ showErrorsModule.directive 'showErrors',
       showSuccess = getShowSuccess options
       trigger = getTrigger options
 
-      inputEl   = el[0].querySelector '.form-control[name]'
-      inputNgEl = angular.element inputEl
-      inputName = $interpolate(inputNgEl.attr('name') || '')(scope)
-      unless inputName
-        throw "show-errors element has no child input elements with a 'name' attribute and a 'form-control' class"
+      inputEls   = el[0].querySelectorAll ['.form-control[name]', 'input[name][type=radio], input[name][type=checkbox]']
+      unless inputEls.length > 0
+        throw "show-errors element has no child input elements with a 'name' attribute"
 
-      inputNgEl.bind trigger, ->
-        blurred = true
-        toggleClasses formCtrl[inputName].$invalid
+      for inputEl in inputEls
+        inputNgEl = angular.element inputEl
+        inputName = $interpolate(inputNgEl.attr('name') || '')(scope)
 
-      scope.$watch ->
-        formCtrl[inputName] && formCtrl[inputName].$invalid
-      , (invalid) ->
-        return if !blurred
-        toggleClasses invalid
+        inputNgEl.bind trigger, ->
+          blurred = true
+          toggleClasses formCtrl[inputName].$invalid
 
-      scope.$on 'show-errors-check-validity', ->
-        toggleClasses formCtrl[inputName].$invalid
+        scope.$watch ->
+          formCtrl[inputName] && formCtrl[inputName].$invalid
+        , (invalid) ->
+          return if !blurred
+          toggleClasses invalid
+
+        scope.$on 'show-errors-check-validity', ->
+          toggleClasses formCtrl[inputName].$invalid
 
       scope.$on 'show-errors-reset', ->
         $timeout ->
