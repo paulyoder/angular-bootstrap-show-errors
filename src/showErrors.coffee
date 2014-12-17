@@ -22,11 +22,12 @@ showErrorsModule.directive 'showErrors',
       trigger = getTrigger options
 
       inputEls   = el[0].querySelectorAll ['.form-control[name]', 'input[name][type=radio], input[name][type=checkbox]']
+      unless inputEls.length > 0
+        throw "show-errors element has no child input elements with a 'name' attribute"
+
       for inputEl in inputEls
         inputNgEl = angular.element inputEl
         inputName = $interpolate(inputNgEl.attr('name') || '')(scope)
-        unless inputName
-          throw "show-errors element has no child input elements with a 'name' attribute"
 
         inputNgEl.bind trigger, ->
           blurred = true
