@@ -33,10 +33,15 @@ describe 'showErrors', ->
         $compile('<form name="userForm"><div class="form-group" show-errors><input type="text" name="firstName"></input></div></form>')($scope)
       ).toThrow "show-errors element has no child input elements with a 'name' attribute and a 'form-control' class"
 
-  it "throws an exception if the element doesn't have the form-group class", ->
+  it "throws an exception if the element doesn't have the form-group or input-group class", ->
     expect( ->
       $compile('<div show-errors></div>')($scope)
-    ).toThrow "show-errors element does not have the 'form-group' class"
+    ).toThrow "show-errors element does not have the 'form-group' or 'input-group' class"
+
+  it "doesn't throw an exception if the element has the input-group class", ->
+    expect( ->
+      $compile('<form name="userForm"><div class="input-group" show-errors><input class="form-control" type="text" name="firstName"></input></div></form>')($scope)
+    ).not.toThrow()
 
   it "throws an exception if the element isn't in a form tag", ->
     expect( ->

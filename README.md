@@ -31,6 +31,15 @@ angular.module('yourApp', ['ui.bootstrap.showErrors']);
 </form>
 ```
 
+3. If you want to avoid the extra bottom margin of `form-group`, you can use `input-group`.
+```html
+<form name="userForm">
+  <div class="input-group" show-errors>
+    <input type="text" name="firstName" ng-model="firstName" ng-required />
+  </div>
+</form>
+```
+
 Force Validity Check
 ---
 By default this directive doesn't check the validity until the user tabs off the input element. However, there are times you want to show invalid form elements even if the user has not tabbed off. (e.g. before saving the form)
@@ -105,6 +114,7 @@ If you only want to show valid values on specific inputs, then you can pass in t
   </div>
 </form>
 ```
+
 
 Custom Trigger
 ---
