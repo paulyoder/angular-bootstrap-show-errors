@@ -106,6 +106,18 @@ If you only want to show valid values on specific inputs, then you can pass in t
 </form>
 ```
 
+Skip Form Group Check
+---
+If your HTML code doesn't have a form-group class, the form group check can be skipped:
+
+```html
+<form name="userForm">
+<div show-errors="{ skipFormGroupCheck: true }">
+<input type="text" name="firstName" ng-model="firstName" ng-required />
+</div>
+</form>
+```
+
 Custom Trigger
 ---
 By default, the validation is not performed until the `blur` event is trigger on the input 

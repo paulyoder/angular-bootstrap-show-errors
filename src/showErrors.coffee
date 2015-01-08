@@ -57,8 +57,9 @@ showErrorsModule.directive 'showErrors',
       restrict: 'A'
       require: '^form'
       compile: (elem, attrs) ->
-        unless elem.hasClass 'form-group'
-          throw "show-errors element does not have the 'form-group' class"
+        if attrs['showErrors'].indexOf('skipFormGroupCheck') == -1
+          unless elem.hasClass 'form-group'
+            throw "show-errors element does not have the 'form-group' class"
         linkFn
     }
 ]
