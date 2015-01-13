@@ -67,8 +67,10 @@
         restrict: 'A',
         require: '^form',
         compile: function(elem, attrs) {
-          if (!(elem.hasClass('form-group') || elem.hasClass('input-group'))) {
-            throw "show-errors element does not have the 'form-group' or 'input-group' class";
+          if (attrs['showErrors'].indexOf('skipFormGroupCheck') === -1) {
+            if (!(elem.hasClass('form-group') || elem.hasClass('input-group'))) {
+              throw "show-errors element does not have the 'form-group' or 'input-group' class";
+            }
           }
           return linkFn;
         }
