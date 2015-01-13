@@ -1,3 +1,10 @@
+### 2.2.0
+
+* Enhancements
+  * Added option to skip the form group check. Thanks @lukaselmer
+  * Allow input-group instead of form-group class. Thanks @morgenes
+  * Works with inputs without the form-control class (helps it work with radio and checkbox controls). Thanks @Kheldar
+
 ### 2.1.0
 
 * Enhancements
