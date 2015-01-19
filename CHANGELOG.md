@@ -1,3 +1,8 @@
+### 2.3.0
+
+* Bug Fixes
+  * reverted the commit in v2.2.0 that no longer required inputs to have the form-control class. This broke select boxes.
+
 ### 2.2.0
 
 * Enhancements
