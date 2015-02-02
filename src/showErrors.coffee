@@ -29,16 +29,16 @@ showErrorsModule.directive 'showErrors',
 
       inputNgEl.bind trigger, ->
         blurred = true
-        toggleClasses formCtrl[inputName].$invalid
+        scope.$broadcast 'show-errors', formCtrl[inputName].$invalid;
 
       scope.$watch ->
         formCtrl[inputName] && formCtrl[inputName].$invalid
       , (invalid) ->
         return if !blurred
-        toggleClasses invalid
+        scope.$broadcast 'show-errors', invalid
 
       scope.$on 'show-errors-check-validity', ->
-        toggleClasses formCtrl[inputName].$invalid
+        scope.$broadcast 'show-errors', formCtrl[inputName].$invalid
 
       scope.$on 'show-errors-reset', ->
         $timeout ->
@@ -47,6 +47,9 @@ showErrorsModule.directive 'showErrors',
           el.removeClass 'has-success'
           blurred = false
         , 0, false
+
+      scope.$on 'show-errors', ->
+        toggleClasses formCtrl[inputName].$invalid
 
       toggleClasses = (invalid) ->
         el.toggleClass 'has-error', invalid
