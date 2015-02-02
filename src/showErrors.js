@@ -36,7 +36,7 @@
         }
         inputNgEl.bind(trigger, function() {
           blurred = true;
-          return toggleClasses(formCtrl[inputName].$invalid);
+          return scope.$broadcast('show-errors', formCtrl[inputName].$invalid);
         });
         scope.$watch(function() {
           return formCtrl[inputName] && formCtrl[inputName].$invalid;
@@ -44,10 +44,10 @@
           if (!blurred) {
             return;
           }
-          return toggleClasses(invalid);
+          return scope.$broadcast('show-errors', invalid);
         });
         scope.$on('show-errors-check-validity', function() {
-          return toggleClasses(formCtrl[inputName].$invalid);
+          return scope.$broadcast('show-errors', formCtrl[inputName].$invalid);
         });
         scope.$on('show-errors-reset', function() {
           return $timeout(function() {
@@ -55,6 +55,9 @@
             el.removeClass('has-success');
             return blurred = false;
           }, 0, false);
+        });
+        scope.$on('show-errors', function() {
+          return toggleClasses(formCtrl[inputName].$invalid);
         });
         return toggleClasses = function(invalid) {
           el.toggleClass('has-error', invalid);
@@ -66,6 +69,7 @@
       return {
         restrict: 'A',
         require: '^form',
+        scope: true,
         compile: function(elem, attrs) {
           if (attrs['showErrors'].indexOf('skipFormGroupCheck') === -1) {
             if (!(elem.hasClass('form-group') || elem.hasClass('input-group'))) {

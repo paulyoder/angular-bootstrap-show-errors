@@ -29,16 +29,16 @@ showErrorsModule.directive 'showErrors',
 
       inputNgEl.bind trigger, ->
         blurred = true
-        toggleClasses formCtrl[inputName].$invalid
+        scope.$broadcast 'show-errors', formCtrl[inputName].$invalid;
 
       scope.$watch ->
         formCtrl[inputName] && formCtrl[inputName].$invalid
       , (invalid) ->
         return if !blurred
-        toggleClasses invalid
+        scope.$broadcast 'show-errors', invalid
 
       scope.$on 'show-errors-check-validity', ->
-        toggleClasses formCtrl[inputName].$invalid
+        scope.$broadcast 'show-errors', formCtrl[inputName].$invalid
 
       scope.$on 'show-errors-reset', ->
         $timeout ->
@@ -48,6 +48,9 @@ showErrorsModule.directive 'showErrors',
           blurred = false
         , 0, false
 
+      scope.$on 'show-errors', ->
+        toggleClasses formCtrl[inputName].$invalid
+
       toggleClasses = (invalid) ->
         el.toggleClass 'has-error', invalid
         if showSuccess
@@ -56,6 +59,7 @@ showErrorsModule.directive 'showErrors',
     {
       restrict: 'A'
       require: '^form'
+      scope: true
       compile: (elem, attrs) ->
         if attrs['showErrors'].indexOf('skipFormGroupCheck') == -1
           unless elem.hasClass('form-group') or elem.hasClass('input-group')
