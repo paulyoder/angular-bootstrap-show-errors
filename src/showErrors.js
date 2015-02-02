@@ -69,6 +69,7 @@
       return {
         restrict: 'A',
         require: '^form',
+        scope: {},
         compile: function(elem, attrs) {
           if (attrs['showErrors'].indexOf('skipFormGroupCheck') === -1) {
             if (!(elem.hasClass('form-group') || elem.hasClass('input-group'))) {

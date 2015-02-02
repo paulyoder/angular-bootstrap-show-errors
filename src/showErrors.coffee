@@ -59,6 +59,7 @@ showErrorsModule.directive 'showErrors',
     {
       restrict: 'A'
       require: '^form'
+      scope: {}
       compile: (elem, attrs) ->
         if attrs['showErrors'].indexOf('skipFormGroupCheck') == -1
           unless elem.hasClass('form-group') or elem.hasClass('input-group')
