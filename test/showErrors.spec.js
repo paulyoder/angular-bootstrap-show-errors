@@ -1,5 +1,5 @@
 (function() {
-  var expectFirstNameFormGroupHasErrorClass, expectFirstNameFormGroupHasSuccessClass, expectFormGroupHasErrorClass, expectLastNameFormGroupHasErrorClass, expectLastNameFormGroupHasSuccessClass, find, firstNameEl, lastNameEl;
+  var cityEl, expectAddressFormGroupHasErrorClass, expectAddressFormGroupHasSuccessClass, expectFirstNameFormGroupHasErrorClass, expectFirstNameFormGroupHasSuccessClass, expectFormGroupHasErrorClass, expectLastNameFormGroupHasErrorClass, expectLastNameFormGroupHasSuccessClass, find, firstNameEl, lastNameEl, zipEl;
 
   describe('showErrors', function() {
     var $compile, $scope, $timeout, compileEl, invalidName, validName;
@@ -22,6 +22,10 @@
           </div>\
           <div id="last-name-group" class="form-group" show-errors="{ showSuccess: true }">\
             <input type="text" name="lastName" ng-model="lastName" ng-minlength="3" class="form-control" />\
+          </div>\
+          <div id="address-group" class="form-group" show-errors="{ showSuccess: true }">\
+            <input type="text" name="zip" ng-model="zip" ng-minlength="3" class="form-control" />\
+            <input type="text" name="city" ng-model="city" ng-minlength="3" class="form-control" />\
           </div>\
         </form>')($scope);
       angular.element(document.body).append(el);
@@ -213,7 +217,7 @@
         return expectFormGroupHasErrorClass(el).toBe(false);
       });
     });
-    return describe('{showSuccess: true} option', function() {
+    describe('{showSuccess: true} option', function() {
       describe('$pristine && $valid', function() {
         return it('has-success is absent', function() {
           var el;
@@ -277,6 +281,79 @@
         });
       });
     });
+    return describe('multiple inputs', function() {
+      describe('$dirty && one $invalid && all blurred', function() {
+        return it('has-error is present', function() {
+          var el;
+          el = compileEl();
+          $scope.userForm.zip.$setViewValue(invalidName);
+          $scope.userForm.city.$setViewValue(validName);
+          angular.element(zipEl(el)).triggerHandler('blur');
+          angular.element(cityEl(el)).triggerHandler('blur');
+          return expectAddressFormGroupHasErrorClass(el).toBe(true);
+        });
+      });
+      describe('$dirty && all $invalid && all blurred', function() {
+        return it('has-error is present', function() {
+          var el;
+          el = compileEl();
+          $scope.userForm.zip.$setViewValue(invalidName);
+          $scope.userForm.city.$setViewValue(invalidName);
+          angular.element(zipEl(el)).triggerHandler('blur');
+          angular.element(cityEl(el)).triggerHandler('blur');
+          return expectAddressFormGroupHasErrorClass(el).toBe(true);
+        });
+      });
+      describe('$dirty && all $valid && all blurred', function() {
+        return it('has-error is absent', function() {
+          var el;
+          el = compileEl();
+          $scope.userForm.zip.$setViewValue(validName);
+          $scope.userForm.city.$setViewValue(validName);
+          angular.element(zipEl(el)).triggerHandler('blur');
+          angular.element(cityEl(el)).triggerHandler('blur');
+          return expectAddressFormGroupHasErrorClass(el).toBe(false);
+        });
+      });
+      describe('$dirty && all $invalid && one blurred', function() {
+        return it('has-error is absent', function() {
+          var el;
+          el = compileEl();
+          $scope.userForm.zip.$setViewValue(invalidName);
+          $scope.userForm.city.$setViewValue(invalidName);
+          angular.element(zipEl(el)).triggerHandler('blur');
+          return expectAddressFormGroupHasErrorClass(el).toBe(false);
+        });
+      });
+      describe('$dirty && one $invalid && one blurred', function() {
+        return it('has-error is absent', function() {
+          var el;
+          el = compileEl();
+          $scope.userForm.zip.$setViewValue(validName);
+          $scope.userForm.city.$setViewValue(invalidName);
+          angular.element(zipEl(el)).triggerHandler('blur');
+          return expectAddressFormGroupHasErrorClass(el).toBe(false);
+        });
+      });
+      describe('$dirty && all $invalid && none blurred', function() {
+        return it('has-error is absent', function() {
+          var el;
+          el = compileEl();
+          $scope.userForm.zip.$setViewValue(invalidName);
+          $scope.userForm.city.$setViewValue(invalidName);
+          return expectAddressFormGroupHasErrorClass(el).toBe(false);
+        });
+      });
+      return describe('$dirty && one $invalid && none blurred', function() {
+        return it('has-error is absent', function() {
+          var el;
+          el = compileEl();
+          $scope.userForm.zip.$setViewValue(validName);
+          $scope.userForm.city.$setViewValue(invalidName);
+          return expectAddressFormGroupHasErrorClass(el).toBe(false);
+        });
+      });
+    });
   });
 
   describe('showErrorsConfig', function() {
@@ -333,6 +410,7 @@
           el = compileEl();
           $scope.userForm.firstName.$setViewValue(validName);
           angular.element(firstNameEl(el)).triggerHandler('blur');
+          angular.element(firstNameEl(el)).triggerHandler('blur');
           $scope.$digest();
           return expectFirstNameFormGroupHasSuccessClass(el).toBe(false);
         });
@@ -374,6 +452,14 @@
     return find(el, '[name=lastName]');
   };
 
+  zipEl = function(el) {
+    return find(el, '[name=zip]');
+  };
+
+  cityEl = function(el) {
+    return find(el, '[name=city]');
+  };
+
   expectFormGroupHasErrorClass = function(el) {
     var formGroup;
     formGroup = el[0].querySelector('[id=first-name-group]');
@@ -392,6 +478,12 @@
     return expect(angular.element(formGroup).hasClass('has-success'));
   };
 
+  expectAddressFormGroupHasSuccessClass = function(el) {
+    var formGroup;
+    formGroup = el[0].querySelector('[id=address-group]');
+    return expect(angular.element(formGroup).hasClass('has-success'));
+  };
+
   expectFirstNameFormGroupHasErrorClass = function(el) {
     var formGroup;
     formGroup = el[0].querySelector('[id=first-name-group]');
@@ -401,6 +493,12 @@
   expectLastNameFormGroupHasErrorClass = function(el) {
     var formGroup;
     formGroup = el[0].querySelector('[id=last-name-group]');
+    return expect(angular.element(formGroup).hasClass('has-error'));
+  };
+
+  expectAddressFormGroupHasErrorClass = function(el) {
+    var formGroup;
+    formGroup = el[0].querySelector('[id=address-group]');
     return expect(angular.element(formGroup).hasClass('has-error'));
   };
 

@@ -21,6 +21,10 @@ describe 'showErrors', ->
           <div id="last-name-group" class="form-group" show-errors="{ showSuccess: true }">
             <input type="text" name="lastName" ng-model="lastName" ng-minlength="3" class="form-control" />
           </div>
+          <div id="address-group" class="form-group" show-errors="{ showSuccess: true }">
+            <input type="text" name="zip" ng-model="zip" ng-minlength="3" class="form-control" />
+            <input type="text" name="city" ng-model="city" ng-minlength="3" class="form-control" />
+          </div>
         </form>'
       )($scope)
     angular.element(document.body).append el
@@ -227,6 +231,65 @@ describe 'showErrors', ->
         $timeout.flush()
         expectLastNameFormGroupHasSuccessClass(el).toBe false
 
+  describe 'multiple inputs', ->
+
+    describe '$dirty && one $invalid && all blurred', ->
+      it 'has-error is present', ->
+        el = compileEl()
+        $scope.userForm.zip.$setViewValue invalidName
+        $scope.userForm.city.$setViewValue validName
+        angular.element(zipEl(el)).triggerHandler 'blur'
+        angular.element(cityEl(el)).triggerHandler 'blur'
+        expectAddressFormGroupHasErrorClass(el).toBe true
+
+    describe '$dirty && all $invalid && all blurred', ->
+      it 'has-error is present', ->
+        el = compileEl()
+        $scope.userForm.zip.$setViewValue invalidName
+        $scope.userForm.city.$setViewValue invalidName
+        angular.element(zipEl(el)).triggerHandler 'blur'
+        angular.element(cityEl(el)).triggerHandler 'blur'
+        expectAddressFormGroupHasErrorClass(el).toBe true
+
+    describe '$dirty && all $valid && all blurred', ->
+      it 'has-error is absent', ->
+        el = compileEl()
+        $scope.userForm.zip.$setViewValue validName
+        $scope.userForm.city.$setViewValue validName
+        angular.element(zipEl(el)).triggerHandler 'blur'
+        angular.element(cityEl(el)).triggerHandler 'blur'
+        expectAddressFormGroupHasErrorClass(el).toBe false
+
+    describe '$dirty && all $invalid && one blurred', ->
+      it 'has-error is absent', ->
+        el = compileEl()
+        $scope.userForm.zip.$setViewValue invalidName
+        $scope.userForm.city.$setViewValue invalidName
+        angular.element(zipEl(el)).triggerHandler 'blur'
+        expectAddressFormGroupHasErrorClass(el).toBe false
+
+    describe '$dirty && one $invalid && one blurred', ->
+      it 'has-error is absent', ->
+        el = compileEl()
+        $scope.userForm.zip.$setViewValue validName
+        $scope.userForm.city.$setViewValue invalidName
+        angular.element(zipEl(el)).triggerHandler 'blur'
+        expectAddressFormGroupHasErrorClass(el).toBe false
+
+    describe '$dirty && all $invalid && none blurred', ->
+      it 'has-error is absent', ->
+        el = compileEl()
+        $scope.userForm.zip.$setViewValue invalidName
+        $scope.userForm.city.$setViewValue invalidName
+        expectAddressFormGroupHasErrorClass(el).toBe false
+
+    describe '$dirty && one $invalid && none blurred', ->
+      it 'has-error is absent', ->
+        el = compileEl()
+        $scope.userForm.zip.$setViewValue validName
+        $scope.userForm.city.$setViewValue invalidName
+        expectAddressFormGroupHasErrorClass(el).toBe false
+
 describe 'showErrorsConfig', ->
   $compile = undefined
   $scope = undefined
@@ -307,6 +370,12 @@ firstNameEl = (el) ->
 lastNameEl = (el) ->
   find el, '[name=lastName]'
 
+zipEl = (el) ->
+  find el, '[name=zip]'
+
+cityEl = (el) ->
+  find el, '[name=city]'
+
 expectFormGroupHasErrorClass = (el) ->
   formGroup = el[0].querySelector '[id=first-name-group]'
   expect angular.element(formGroup).hasClass('has-error')
@@ -319,10 +388,18 @@ expectLastNameFormGroupHasSuccessClass = (el) ->
   formGroup = el[0].querySelector '[id=last-name-group]'
   expect angular.element(formGroup).hasClass('has-success')
 
+expectAddressFormGroupHasSuccessClass = (el) ->
+  formGroup = el[0].querySelector '[id=address-group]'
+  expect angular.element(formGroup).hasClass('has-success')
+
 expectFirstNameFormGroupHasErrorClass = (el) ->
   formGroup = el[0].querySelector '[id=first-name-group]'
   expect angular.element(formGroup).hasClass('has-error')
 
 expectLastNameFormGroupHasErrorClass = (el) ->
   formGroup = el[0].querySelector '[id=last-name-group]'
+  expect angular.element(formGroup).hasClass('has-error')
+
+expectAddressFormGroupHasErrorClass = (el) ->
+  formGroup = el[0].querySelector '[id=address-group]'
   expect angular.element(formGroup).hasClass('has-error')
