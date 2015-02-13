@@ -16,36 +16,57 @@ showErrorsModule.directive 'showErrors',
       showSuccess
 
     linkFn = (scope, el, attrs, formCtrl) ->
-      blurred = false
+      blurred = {}
+      inputNames = []
       options = scope.$eval attrs.showErrors
       showSuccess = getShowSuccess options
-      trigger = getTrigger options
+      trigger = getTrigger options      
 
-      inputEl   = el[0].querySelector '.form-control[name]'
-      inputNgEl = angular.element inputEl
-      inputName = $interpolate(inputNgEl.attr('name') || '')(scope)
-      unless inputName
+      inputElements = {}
+      for inputElement in el[0].querySelectorAll('.form-control[name]')
+        if inputName = $interpolate(inputElement.name || '')(scope) 
+          (inputElements[inputName] or= []).push inputElement
+
+      isBlurred = () ->
+        allBlurred = true
+        angular.forEach blurred, (elementBlurred) ->
+          allBlurred = allBlurred && elementBlurred
+        allBlurred
+
+      isValid = () ->
+        allValid = true
+        angular.forEach inputNames, (inputName) ->
+          allValid = allValid && formCtrl[inputName].$valid
+        allValid
+
+      angular.forEach inputElements, (inputEl, inputName) ->
+        inputNames.push inputName
+        blurred[inputName] = false
+        inputNgEl = angular.element inputEl
+        inputNgEl.bind trigger, ->
+          blurred[inputName] = true
+          if isBlurred()
+            toggleClasses !isValid()
+
+        scope.$watch ->
+          formCtrl[inputName] && formCtrl[inputName].$invalid
+        , (invalid) ->
+          return if !isBlurred()
+          toggleClasses !isValid()
+
+      unless inputNames.length
         throw "show-errors element has no child input elements with a 'name' attribute and a 'form-control' class"
 
-      inputNgEl.bind trigger, ->
-        blurred = true
-        toggleClasses formCtrl[inputName].$invalid
-
-      scope.$watch ->
-        formCtrl[inputName] && formCtrl[inputName].$invalid
-      , (invalid) ->
-        return if !blurred
-        toggleClasses invalid
-
       scope.$on 'show-errors-check-validity', ->
-        toggleClasses formCtrl[inputName].$invalid
+        toggleClasses !isValid()
 
       scope.$on 'show-errors-reset', ->
         $timeout ->
           # want to run this after the current digest cycle
           el.removeClass 'has-error'
           el.removeClass 'has-success'
-          blurred = false
+          angular.forEach inputNames, (inputName) ->
+            blurred[inputName] = false
         , 0, false
 
       toggleClasses = (invalid) ->

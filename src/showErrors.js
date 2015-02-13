@@ -23,37 +23,69 @@
         return showSuccess;
       };
       linkFn = function(scope, el, attrs, formCtrl) {
-        var blurred, inputEl, inputName, inputNgEl, options, showSuccess, toggleClasses, trigger;
-        blurred = false;
+        var blurred, inputElement, inputElements, inputName, inputNames, isBlurred, isValid, options, showSuccess, toggleClasses, trigger, _i, _len, _ref;
+        blurred = {};
+        inputNames = [];
         options = scope.$eval(attrs.showErrors);
         showSuccess = getShowSuccess(options);
         trigger = getTrigger(options);
-        inputEl = el[0].querySelector('.form-control[name]');
-        inputNgEl = angular.element(inputEl);
-        inputName = $interpolate(inputNgEl.attr('name') || '')(scope);
-        if (!inputName) {
+        inputElements = {};
+        _ref = el[0].querySelectorAll('.form-control[name]');
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          inputElement = _ref[_i];
+          if (inputName = $interpolate(inputElement.name || '')(scope)) {
+            (inputElements[inputName] || (inputElements[inputName] = [])).push(inputElement);
+          }
+        }
+        isBlurred = function() {
+          var allBlurred;
+          allBlurred = true;
+          angular.forEach(blurred, function(elementBlurred) {
+            return allBlurred = allBlurred && elementBlurred;
+          });
+          return allBlurred;
+        };
+        isValid = function() {
+          var allValid;
+          allValid = true;
+          angular.forEach(inputNames, function(inputName) {
+            return allValid = allValid && formCtrl[inputName].$valid;
+          });
+          return allValid;
+        };
+        angular.forEach(inputElements, function(inputEl, inputName) {
+          var inputNgEl;
+          inputNames.push(inputName);
+          blurred[inputName] = false;
+          inputNgEl = angular.element(inputEl);
+          inputNgEl.bind(trigger, function() {
+            blurred[inputName] = true;
+            if (isBlurred()) {
+              return toggleClasses(!isValid());
+            }
+          });
+          return scope.$watch(function() {
+            return formCtrl[inputName] && formCtrl[inputName].$invalid;
+          }, function(invalid) {
+            if (!isBlurred()) {
+              return;
+            }
+            return toggleClasses(!isValid());
+          });
+        });
+        if (!inputNames.length) {
           throw "show-errors element has no child input elements with a 'name' attribute and a 'form-control' class";
         }
-        inputNgEl.bind(trigger, function() {
-          blurred = true;
-          return toggleClasses(formCtrl[inputName].$invalid);
-        });
-        scope.$watch(function() {
-          return formCtrl[inputName] && formCtrl[inputName].$invalid;
-        }, function(invalid) {
-          if (!blurred) {
-            return;
-          }
-          return toggleClasses(invalid);
-        });
         scope.$on('show-errors-check-validity', function() {
-          return toggleClasses(formCtrl[inputName].$invalid);
+          return toggleClasses(!isValid());
         });
         scope.$on('show-errors-reset', function() {
           return $timeout(function() {
             el.removeClass('has-error');
             el.removeClass('has-success');
-            return blurred = false;
+            return angular.forEach(inputNames, function(inputName) {
+              return blurred[inputName] = false;
+            });
           }, 0, false);
         });
         return toggleClasses = function(invalid) {
