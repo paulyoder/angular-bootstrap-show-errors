@@ -21,7 +21,7 @@ showErrorsModule.directive 'showErrors',
       showSuccess = getShowSuccess options
       trigger = getTrigger options
 
-      inputEl   = el[0].querySelector 'input[name]'
+      inputEl   = el[0].querySelector 'input[name],select[name],password[name],email[name],datetime[name],datetime-local[name],date[name],month[name],time[name],week[name],number[name],url[name],search[name],tel[name],color[name],textarea[name]'
       inputNgEl = angular.element inputEl
       inputName = $interpolate(inputNgEl.attr('name') || '')(scope)
       unless inputName
