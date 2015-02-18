@@ -21,11 +21,11 @@ showErrorsModule.directive 'showErrors',
       showSuccess = getShowSuccess options
       trigger = getTrigger options
 
-      inputEl   = el[0].querySelector '.form-control[name]'
+      inputEl   = el[0].querySelector 'input[name],select[name],password[name],email[name],datetime[name],datetime-local[name],date[name],month[name],time[name],week[name],number[name],url[name],search[name],tel[name],color[name],textarea[name]'
       inputNgEl = angular.element inputEl
       inputName = $interpolate(inputNgEl.attr('name') || '')(scope)
       unless inputName
-        throw "show-errors element has no child input elements with a 'name' attribute and a 'form-control' class"
+        throw "show-errors element has no child input element with a 'name' attribute"
 
       inputNgEl.bind trigger, ->
         blurred = true
