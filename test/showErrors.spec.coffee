@@ -145,6 +145,12 @@ describe 'showErrors', ->
       $scope.$apply ->
         $scope.showErrorsCheckValidity = true
       expectFormGroupHasErrorClass(el).toBe true
+	  
+  it 'showErrorsCheckValidity can be limited to by form name', ->
+    el = compileEl()
+    $scope.userForm.firstName.$setViewValue(invalidName)
+    $scope.$broadcast('show-errors-check-validity', 'aDifferentFormName')
+    expectFormGroupHasErrorClass(el).toBe false
 
   describe 'showErrorsReset', ->
     it 'removes has-error', ->

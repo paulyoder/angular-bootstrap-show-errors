@@ -37,8 +37,9 @@ showErrorsModule.directive 'showErrors',
         return if !blurred
         toggleClasses invalid
 
-      scope.$on 'show-errors-check-validity', ->
-        toggleClasses formCtrl[inputName].$invalid
+      scope.$on 'show-errors-check-validity', (event, name) ->
+        if angular.isUndefined(name) || formCtrl['$name'] == name
+          toggleClasses formCtrl[inputName].$invalid
 
       scope.$on 'show-errors-reset', ->
         $timeout ->

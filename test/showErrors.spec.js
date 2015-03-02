@@ -174,6 +174,13 @@
         return expectFormGroupHasErrorClass(el).toBe(true);
       });
     });
+    it('showErrorsCheckValidity can be limited to by form name', function() {
+      var el;
+      el = compileEl();
+      $scope.userForm.firstName.$setViewValue(invalidName);
+      $scope.$broadcast('show-errors-check-validity', 'aDifferentFormName');
+      return expectFormGroupHasErrorClass(el).toBe(false);
+    });
     describe('showErrorsReset', function() {
       return it('removes has-error', function() {
         var el;
