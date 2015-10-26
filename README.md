@@ -61,11 +61,59 @@ To force the validity check, broadcast the `show-errors-check-validity` event.
 ```javascript
 $scope.save = function() {
   $scope.$broadcast('show-errors-check-validity');
-  
+
   if ($scope.userForm.$valid) {
     // save the user
   }
 }
+```
+
+Show Feedback Icons
+---
+Feedback icons are supported through the ShowErrorIcons directive.
+
+#### Example
+
+```html
+<form name="userForm">
+  <div class="form-group has-feedback" show-errors>
+    <input type="text" name="firstName" ng-model="firstName" ng-required />
+    <span class="form-control-feedback" show-error-icons></span>
+  </div>
+  <input type="submit" ng-click="save()" />
+</form>
+```
+
+Show Validation error hints
+---
+Validation error hints are supported through the ShowErrorHint directive.
+The span that has this added directive will be shown if the specified validation error occured. This integrates well with the ui-validator module for example.
+
+Do not forget to add the css fix from below if you intend to show a bullet point list
+
+#### Example
+
+```css
+li.help-block {
+  display: list-item
+}
+
+```
+
+```html
+<form name="userForm">
+  <div class="form-group" show-errors>
+    <input type="text" name="firstName" ng-model="firstName" ng-required
+      ui-validate="{ length: '$value.length >= 4', 'unique': 'userExists($value)'}"/>
+    <ul>
+        <li class="help-block" show-error-hint="unique">It is not unique!</li>
+        <li class="help-block" show-error-hint="length">Too short!</li>
+        <li class="help-block" show-error-hint="required">This field is required!</li>
+        <li class="help-block" show-error-hint>All errors {{userForm.firstName.$error}}</li>
+    </ul>
+  </div>
+  <input type="submit" ng-click="save()" />
+</form>
 ```
 
 Reset
@@ -91,7 +139,7 @@ $scope.reset = function() {
 
 Show Valid Entries
 ---
-It's also possible to let the user know when they have entered valid values by applying the 'show-success' class that Bootstrap provides. 
+It's also possible to let the user know when they have entered valid values by applying the 'show-success' class that Bootstrap provides.
 You can either apply this globally or on an element by element basis.
 
 ##### Globally
@@ -129,8 +177,8 @@ If your HTML code doesn't have a form-group class, the form group check can be s
 
 Custom Trigger
 ---
-By default, the validation is not performed until the `blur` event is trigger on the input 
-element. However, there are some scenarios where this is not desirable, so it's possible to 
+By default, the validation is not performed until the `blur` event is trigger on the input
+element. However, there are some scenarios where this is not desirable, so it's possible to
 override this with the `trigger` option.
 
 ##### By Input Element
@@ -149,7 +197,7 @@ app.config(['showErrorsConfigProvider', function(showErrorsConfigProvider) {
   showErrorsConfigProvider.trigger('keypress');
 }]);
 ```
-    
+
 ## Development
 
 ### Install Development Dependencies
@@ -163,7 +211,7 @@ bower install
 ### Compile and Run the Unit Tests
 Just type `grunt` in the command line to compile and run the karma unit tests once.
 
-If you want to have grunt watch for any file changes and automatically compile and run the karma 
+If you want to have grunt watch for any file changes and automatically compile and run the karma
 unit tests, then run the following command:
 ```
 grunt karma:continuous:start watch
