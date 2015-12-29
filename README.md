@@ -26,7 +26,7 @@ angular.module('yourApp', ['ui.bootstrap.showErrors']);
 ```html
 <form name="userForm">
   <div class="form-group" show-errors>
-    <input type="text" name="firstName" ng-model="firstName" ng-required />
+    <input type="text" name="firstName" ng-model="firstName" required />
   </div>
 </form>
 ```
@@ -35,7 +35,7 @@ angular.module('yourApp', ['ui.bootstrap.showErrors']);
 ```html
 <form name="userForm">
   <div class="input-group" show-errors>
-    <input type="text" name="firstName" ng-model="firstName" ng-required />
+    <input type="text" name="firstName" ng-model="firstName" required />
   </div>
 </form>
 ```
@@ -52,7 +52,7 @@ To force the validity check, broadcast the `show-errors-check-validity` event.
 ```html
 <form name="userForm">
   <div class="form-group" show-errors>
-    <input type="text" name="firstName" ng-model="firstName" ng-required />
+    <input type="text" name="firstName" ng-model="firstName" required />
   </div>
   <input type="submit" ng-click="save()" />
 </form>
@@ -77,7 +77,7 @@ If you have functionality to reset your form, you can broadcast the 'show-errors
 ```html
 <form name="userForm">
   <div class="form-group" show-errors>
-    <input type="text" name="firstName" ng-model="firstName" ng-required />
+    <input type="text" name="firstName" ng-model="firstName" required />
   </div>
   <a href="#" ng-click="reset()">Reset</a>
 </form>
@@ -110,7 +110,7 @@ If you only want to show valid values on specific inputs, then you can pass in t
 ```html
 <form name="userForm">
   <div class="form-group" show-errors="{ showSuccess: true }">
-    <input type="text" name="firstName" ng-model="firstName" ng-required />
+    <input type="text" name="firstName" ng-model="firstName" required />
   </div>
 </form>
 ```
@@ -122,7 +122,7 @@ If your HTML code doesn't have a form-group class, the form group check can be s
 ```html
 <form name="userForm">
 <div show-errors="{ skipFormGroupCheck: true }">
-<input type="text" name="firstName" ng-model="firstName" ng-required />
+<input type="text" name="firstName" ng-model="firstName" required />
 </div>
 </form>
 ```
@@ -137,7 +137,7 @@ override this with the `trigger` option.
 ```html
 <form name="userForm">
   <div class="form-group" show-errors="{ trigger: 'keypress' }">
-    <input ng-model="firstName" ng-pattern="/^foo$/" ng-required name="firstName" class="form-control" type="text" />
+    <input ng-model="firstName" ng-pattern="/^foo$/" required name="firstName" class="form-control" type="text" />
   </div>
 </form>
 ```
