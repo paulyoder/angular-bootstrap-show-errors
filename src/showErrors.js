@@ -5,7 +5,7 @@
 
   showErrorsModule.directive('showErrors', [
     '$timeout', 'showErrorsConfig', '$interpolate', function($timeout, showErrorsConfig, $interpolate) {
-      var getShowSuccess, getTrigger, linkFn;
+      var getIgnorePristine, getShowSuccess, getTrigger, linkFn;
       getTrigger = function(options) {
         var trigger;
         trigger = showErrorsConfig.trigger;
@@ -22,11 +22,20 @@
         }
         return showSuccess;
       };
+      getIgnorePristine = function(options) {
+        var ignorePristine;
+        ignorePristine = showErrorsConfig.ignorePristine;
+        if (options && (options.ignorePristine != null)) {
+          ignorePristine = options.ignorePristine;
+        }
+        return ignorePristine;
+      };
       linkFn = function(scope, el, attrs, formCtrl) {
-        var blurred, inputEl, inputName, inputNgEl, options, showSuccess, toggleClasses, trigger;
+        var blurred, ignorePristine, inputEl, inputName, inputNgEl, options, showSuccess, toggleClasses, trigger;
         blurred = false;
         options = scope.$eval(attrs.showErrors);
         showSuccess = getShowSuccess(options);
+        ignorePristine = getIgnorePristine(options);
         trigger = getTrigger(options);
         inputEl = el[0].querySelector('.form-control[name]');
         inputNgEl = angular.element(inputEl);
@@ -35,6 +44,9 @@
           throw "show-errors element has no child input elements with a 'name' attribute and a 'form-control' class";
         }
         inputNgEl.bind(trigger, function() {
+          if (ignorePristine && formCtrl[inputName].$pristine) {
+            return;
+          }
           blurred = true;
           return toggleClasses(formCtrl[inputName].$invalid);
         });
@@ -79,19 +91,24 @@
   ]);
 
   showErrorsModule.provider('showErrorsConfig', function() {
-    var _showSuccess, _trigger;
+    var _ignorePristine, _showSuccess, _trigger;
     _showSuccess = false;
     _trigger = 'blur';
+    _ignorePristine = false;
     this.showSuccess = function(showSuccess) {
       return _showSuccess = showSuccess;
     };
     this.trigger = function(trigger) {
       return _trigger = trigger;
     };
+    this.ignorePristine = function(ignorePristine) {
+      return _ignorePristine = ignorePristine;
+    };
     this.$get = function() {
       return {
         showSuccess: _showSuccess,
-        trigger: _trigger
+        trigger: _trigger,
+        ignorePristine: _ignorePristine
       };
     };
   });
