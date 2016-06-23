@@ -149,6 +149,28 @@ app.config(['showErrorsConfigProvider', function(showErrorsConfigProvider) {
   showErrorsConfigProvider.trigger('keypress');
 }]);
 ```
+
+Ignore Pristine
+---
+You may choose not to not show validation errors on pristine fields that have been blurred. This is useful if you
+prefer to allow the user to tab past a required field or if you are setting focus onto a required field.
+
+##### By Input Element
+```html
+<form name="userForm">
+  <div class="form-group" show-errors="{ ignorePristine: 'true' }">
+    <input ng-model="firstName" ng-pattern="/^foo$/" ng-required name="firstName" class="form-control" type="text" required autofocus/>
+  </div>
+</form>
+```
+
+##### Globally
+```javascript
+app = angular.module('yourApp', ['ui.bootstrap.showErrors']);
+app.config(['showErrorsConfigProvider', function(showErrorsConfigProvider) {
+  showErrorsConfigProvider.ignorePristine(true);
+}]);
+```    
     
 ## Development
 
