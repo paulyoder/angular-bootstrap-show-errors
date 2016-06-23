@@ -159,7 +159,7 @@ prefer to allow the user to tab past a required field or if you are setting focu
 ```html
 <form name="userForm">
   <div class="form-group" show-errors="{ ignorePristine: 'true' }">
-    <input ng-model="firstName" ng-pattern="/^foo$/" ng-required name="firstName" class="form-control" type="text" required autofocus/>
+    <input ng-model="firstName" ng-pattern="/^foo$/" ng-required name="firstName" class="form-control" type="text" autofocus/>
   </div>
 </form>
 ```
