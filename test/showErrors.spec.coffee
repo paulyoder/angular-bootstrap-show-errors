@@ -27,11 +27,11 @@ describe 'showErrors', ->
     $scope.$digest()
     el
 
-  describe 'directive does not contain an input element with a form-control class and name attribute', ->
+  describe 'directive does not contain an input element with a name attribute', ->
     it 'throws an exception', ->
       expect( ->
-        $compile('<form name="userForm"><div class="form-group" show-errors><input type="text" name="firstName"></input></div></form>')($scope)
-      ).toThrow "show-errors element has no child input elements with a 'name' attribute and a 'form-control' class"
+        $compile('<form name="userForm"><div class="form-group" show-errors><input type="text"></input></div></form>')($scope)
+      ).toThrow "show-errors element has no child input elements with a 'name' attribute"
 
   it "throws an exception if the element doesn't have the form-group or input-group class", ->
     expect( ->
@@ -145,6 +145,19 @@ describe 'showErrors', ->
       $scope.$apply ->
         $scope.showErrorsCheckValidity = true
       expectFormGroupHasErrorClass(el).toBe true
+	  
+  describe 'showErrorsCheckValidity with form name', ->
+    it 'correctly applies when form name matches', ->
+      el = compileEl()
+      $scope.userForm.firstName.$setViewValue(invalidName)
+      $scope.$broadcast('show-errors-check-validity', 'userForm')
+      expectFormGroupHasErrorClass(el).toBe true
+  
+    it 'correctly skips when form name differs', ->
+      el = compileEl()
+      $scope.userForm.firstName.$setViewValue(invalidName)
+      $scope.$broadcast('show-errors-check-validity', 'differentForm')
+      expectFormGroupHasErrorClass(el).toBe false
 
   describe 'showErrorsReset', ->
     it 'removes has-error', ->

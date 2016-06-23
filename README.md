@@ -44,7 +44,7 @@ Force Validity Check
 ---
 By default this directive doesn't check the validity until the user tabs off the input element. However, there are times you want to show invalid form elements even if the user has not tabbed off. (e.g. before saving the form)
 
-To force the validity check, broadcast the `show-errors-check-validity` event.
+To force the validity check, broadcast the `show-errors-check-validity` event.  In broadcasting `show-errors-check-validity` you can optionally specify a form name to limit which form is updated with messages.
 
 #### Example
 
@@ -149,6 +149,28 @@ app.config(['showErrorsConfigProvider', function(showErrorsConfigProvider) {
   showErrorsConfigProvider.trigger('keypress');
 }]);
 ```
+
+Ignore Pristine
+---
+You may choose not to not show validation errors on pristine fields that have been blurred. This is useful if you
+prefer to allow the user to tab past a required field or if you are setting focus onto a required field.
+
+##### By Input Element
+```html
+<form name="userForm">
+  <div class="form-group" show-errors="{ ignorePristine: 'true' }">
+    <input ng-model="firstName" ng-required name="firstName" class="form-control" type="text" autofocus/>
+  </div>
+</form>
+```
+
+##### Globally
+```javascript
+app = angular.module('yourApp', ['ui.bootstrap.showErrors']);
+app.config(['showErrorsConfigProvider', function(showErrorsConfigProvider) {
+  showErrorsConfigProvider.ignorePristine(true);
+}]);
+```    
     
 ## Development
 

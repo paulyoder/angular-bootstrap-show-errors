@@ -15,19 +15,27 @@ showErrorsModule.directive 'showErrors',
         showSuccess = options.showSuccess
       showSuccess
 
+    getIgnorePristine = (options) ->
+      ignorePristine = showErrorsConfig.ignorePristine
+      if options && options.ignorePristine?
+        ignorePristine = options.ignorePristine
+      ignorePristine
+
     linkFn = (scope, el, attrs, formCtrl) ->
       blurred = false
       options = scope.$eval attrs.showErrors
       showSuccess = getShowSuccess options
+      ignorePristine = getIgnorePristine options
       trigger = getTrigger options
 
-      inputEl   = el[0].querySelector '.form-control[name]'
+      inputEl   = el[0].querySelector '[name]'
       inputNgEl = angular.element inputEl
       inputName = $interpolate(inputNgEl.attr('name') || '')(scope)
       unless inputName
-        throw "show-errors element has no child input elements with a 'name' attribute and a 'form-control' class"
+        throw "show-errors element has no child input elements with a 'name' attribute"
 
       inputNgEl.bind trigger, ->
+        return if ignorePristine && formCtrl[inputName].$pristine
         blurred = true
         toggleClasses formCtrl[inputName].$invalid
 
@@ -37,8 +45,9 @@ showErrorsModule.directive 'showErrors',
         return if !blurred
         toggleClasses invalid
 
-      scope.$on 'show-errors-check-validity', ->
-        toggleClasses formCtrl[inputName].$invalid
+      scope.$on 'show-errors-check-validity', (event, name) ->
+        if angular.isUndefined(name) || formCtrl['$name'] == name
+          toggleClasses formCtrl[inputName].$invalid
 
       scope.$on 'show-errors-reset', ->
         $timeout ->
@@ -67,6 +76,7 @@ showErrorsModule.directive 'showErrors',
 showErrorsModule.provider 'showErrorsConfig', ->
   _showSuccess = false
   _trigger = 'blur'
+  _ignorePristine = false
 
   @showSuccess = (showSuccess) ->
     _showSuccess = showSuccess
@@ -74,8 +84,12 @@ showErrorsModule.provider 'showErrorsConfig', ->
   @trigger = (trigger) ->
     _trigger = trigger
 
+  @ignorePristine = (ignorePristine) ->
+    _ignorePristine = ignorePristine
+
   @$get = ->
     showSuccess: _showSuccess
     trigger: _trigger
+    ignorePristine: _ignorePristine
 
   return
