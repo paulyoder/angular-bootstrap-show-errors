@@ -44,7 +44,7 @@ Force Validity Check
 ---
 By default this directive doesn't check the validity until the user tabs off the input element. However, there are times you want to show invalid form elements even if the user has not tabbed off. (e.g. before saving the form)
 
-To force the validity check, broadcast the `show-errors-check-validity` event.
+To force the validity check, broadcast the `show-errors-check-validity` event.  In broadcasting `show-errors-check-validity` you can optionally specify a form name to limit which form is updated with messages.
 
 #### Example
 

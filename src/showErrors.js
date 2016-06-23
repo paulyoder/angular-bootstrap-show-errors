@@ -37,11 +37,11 @@
         showSuccess = getShowSuccess(options);
         ignorePristine = getIgnorePristine(options);
         trigger = getTrigger(options);
-        inputEl = el[0].querySelector('.form-control[name]');
+        inputEl = el[0].querySelector('[name]');
         inputNgEl = angular.element(inputEl);
         inputName = $interpolate(inputNgEl.attr('name') || '')(scope);
         if (!inputName) {
-          throw "show-errors element has no child input elements with a 'name' attribute and a 'form-control' class";
+          throw "show-errors element has no child input elements with a 'name' attribute";
         }
         inputNgEl.bind(trigger, function() {
           if (ignorePristine && formCtrl[inputName].$pristine) {
@@ -58,8 +58,10 @@
           }
           return toggleClasses(invalid);
         });
-        scope.$on('show-errors-check-validity', function() {
-          return toggleClasses(formCtrl[inputName].$invalid);
+        scope.$on('show-errors-check-validity', function(event, name) {
+          if (angular.isUndefined(name) || formCtrl['$name'] === name) {
+            return toggleClasses(formCtrl[inputName].$invalid);
+          }
         });
         scope.$on('show-errors-reset', function() {
           return $timeout(function() {

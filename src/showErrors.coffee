@@ -28,11 +28,11 @@ showErrorsModule.directive 'showErrors',
       ignorePristine = getIgnorePristine options
       trigger = getTrigger options
 
-      inputEl   = el[0].querySelector '.form-control[name]'
+      inputEl   = el[0].querySelector '[name]'
       inputNgEl = angular.element inputEl
       inputName = $interpolate(inputNgEl.attr('name') || '')(scope)
       unless inputName
-        throw "show-errors element has no child input elements with a 'name' attribute and a 'form-control' class"
+        throw "show-errors element has no child input elements with a 'name' attribute"
 
       inputNgEl.bind trigger, ->
         return if ignorePristine && formCtrl[inputName].$pristine
@@ -45,8 +45,9 @@ showErrorsModule.directive 'showErrors',
         return if !blurred
         toggleClasses invalid
 
-      scope.$on 'show-errors-check-validity', ->
-        toggleClasses formCtrl[inputName].$invalid
+      scope.$on 'show-errors-check-validity', (event, name) ->
+        if angular.isUndefined(name) || formCtrl['$name'] == name
+          toggleClasses formCtrl[inputName].$invalid
 
       scope.$on 'show-errors-reset', ->
         $timeout ->

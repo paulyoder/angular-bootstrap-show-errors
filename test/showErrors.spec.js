@@ -28,11 +28,11 @@
       $scope.$digest();
       return el;
     };
-    describe('directive does not contain an input element with a form-control class and name attribute', function() {
+    describe('directive does not contain an input element with a name attribute', function() {
       return it('throws an exception', function() {
         return expect(function() {
-          return $compile('<form name="userForm"><div class="form-group" show-errors><input type="text" name="firstName"></input></div></form>')($scope);
-        }).toThrow("show-errors element has no child input elements with a 'name' attribute and a 'form-control' class");
+          return $compile('<form name="userForm"><div class="form-group" show-errors><input type="text"></input></div></form>')($scope);
+        }).toThrow("show-errors element has no child input elements with a 'name' attribute");
       });
     });
     it("throws an exception if the element doesn't have the form-group or input-group class", function() {
@@ -172,6 +172,22 @@
           return $scope.showErrorsCheckValidity = true;
         });
         return expectFormGroupHasErrorClass(el).toBe(true);
+      });
+    });
+    describe('showErrorsCheckValidity with form name', function() {
+      it('correctly applies when form name matches', function() {
+        var el;
+        el = compileEl();
+        $scope.userForm.firstName.$setViewValue(invalidName);
+        $scope.$broadcast('show-errors-check-validity', 'userForm');
+        return expectFormGroupHasErrorClass(el).toBe(true);
+      });
+      return it('correctly skips when form name differs', function() {
+        var el;
+        el = compileEl();
+        $scope.userForm.firstName.$setViewValue(invalidName);
+        $scope.$broadcast('show-errors-check-validity', 'differentForm');
+        return expectFormGroupHasErrorClass(el).toBe(false);
       });
     });
     describe('showErrorsReset', function() {
